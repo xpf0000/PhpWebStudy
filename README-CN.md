@@ -25,7 +25,7 @@ PhpWebStudy 是一款mac下PHP和web开发环境管理工具,包含php,nginx,apa
 
 ## 🖥 应用界面
 
-![motrix-screenshot-task-cn.png](https://cdn.nlark.com/yuque/0/2019/png/129147/1550151234585-e513bd4f-e127-402f-accb-1ebbba9b3c41.png)
+![scan.png](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/scan.jpg)
 
 ## ⌨️ 本地开发
 
@@ -70,35 +70,10 @@ npm run build
 
 - [Electron](https://electronjs.org/)
 - [Vue](https://vuejs.org/) + [VueX](https://vuex.vuejs.org/) + [Element](https://element.eleme.io)
-- [Aria2](https://aria2.github.io/) (注：macOS 和 Linux 版本使用的是 64 位的 aria2c，Windows 版使用的 32 位的）
-
-## ☑️ TODO
-
-开发计划请移步 [Trello](https://trello.com/b/qNUzA0bv/motrix) 查看
 
 ## 🤝 参与共建 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat)](http://makeapullrequest.com)
 
 如果你有兴趣参与共同开发，欢迎 FORK 和 PR。
-
-## 🌍 国际化
-
-欢迎大家将 PhpWebStudy 翻译成更多的语言版本 🧐，开工之前请先阅读一下 [翻译指南](./CONTRIBUTING-CN.md#-翻译指南)。
-
-| Key   | Name                | Status       |
-|-------|:--------------------|:-------------|
-| ca    | Català              | 🚧 [@marcizhu](https://github.com/marcizhu) |
-| de    | Deutsch             | ✔️ [@Schloemicher](https://github.com/Schloemicher) |
-| en-US | English             | ✔️           |
-| fa    | فارسی               | ✔️ [@Nima-Ra](https://github.com/Nima-Ra) |
-| fr    | Français            | ✔️ [@gpatarin](https://github.com/gpatarin) |
-| ja    | 日本語               | ✔️ [@hbkrkzk](https://github.com/hbkrkzk) |
-| ko    | 한국어                | ✔️ [@KOZ39](https://github.com/KOZ39) |
-| pt-BR | Portuguese (Brazil) | ✔️ [@andrenoberto](https://github.com/andrenoberto) |
-| ru    | Русский             | 🚧 [@bladeaweb](https://github.com/bladeaweb) |
-| tr    | Türkçe              | ✔️ [@abdullah](https://github.com/abdullah) |
-| uk    | Українська          | 🚧 [@bladeaweb](https://github.com/bladeaweb) |
-| zh-CN | 简体中文             | ✔️           |
-| zh-TW | 繁體中文             | ✔️ [@Yukaii](https://github.com/Yukaii) |
 
 ## 📜 开源许可
 
