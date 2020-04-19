@@ -1,0 +1,30 @@
+version: 1.0.{build}
+
+branches:
+  only:
+    - master
+
+image: Visual Studio 2017
+platform:
+  - x64
+
+cache:
+  - node_modules
+  - '%APPDATA%\npm-cache'
+  - '%USERPROFILE%\.electron'
+  - '%USERPROFILE%\AppData\Local\Yarn\cache'
+
+init:
+  - git config --global core.autocrlf input
+
+install:
+  - ps: Install-Product node 12.14.1 x64
+  - git reset --hard HEAD
+  - npm install
+  - npm rebuild node-sass
+  - node --version
+
+build_script:
+  - npm run release
+
+test: off
