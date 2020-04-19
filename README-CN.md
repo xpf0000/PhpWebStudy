@@ -6,7 +6,7 @@
 
 ## mac下PHP和web开发环境管理工具
 
-[![GitHub release](https://img.shields.io/github/release/xpf0000/PhpWebStudy.svg)](https://github.com/xpf0000/PhpWebStudy/releases) [![Build Status](https://travis-ci.org/xpf0000/PhpWebStudy.svg?branch=master)](https://travis-ci.org/xpf0000/PhpWebStudy) [![Build status](https://ci.appveyor.com/api/projects/status/l11d5h05xwwcvoux/branch/master?svg=true)](https://ci.appveyor.com/project/xpf0000/motrix/branch/master) [![Total Downloads](https://img.shields.io/github/downloads/xpf0000/PhpWebStudy/total.svg)](https://github.com/xpf0000/PhpWebStudy/releases)
+[![GitHub release](https://img.shields.io/github/release/xpf0000/PhpWebStudy.svg)](https://github.com/xpf0000/PhpWebStudy/releases)  [![Total Downloads](https://img.shields.io/github/downloads/xpf0000/PhpWebStudy/total.svg)](https://github.com/xpf0000/PhpWebStudy/releases)
 
 PhpWebStudy 是一款mac下PHP和web开发环境管理工具,包含php,nginx,apache,msyql,memcached,redis以及host管理
 ## ✨ 特性
