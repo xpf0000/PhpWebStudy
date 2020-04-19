@@ -4,7 +4,7 @@ branches:
   only:
     - master
 
-image: Visual Studio 2017
+image: macos-mojave
 platform:
   - x64
 

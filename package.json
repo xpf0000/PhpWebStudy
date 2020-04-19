@@ -1,15 +1,19 @@
 {
   "name": "PhpWebStudy",
   "version": "1.0.0",
-  "description": "A full-featured download manager",
+  "description": "PHP and Web develop environment manager for Mac",
   "homepage": "https://phpstudy.xpfme.com",
   "author": {
     "name": "pengfei xu",
     "email": "250881478@qq.com"
   },
   "copyright": "Copyright© pengfei xu",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "main": "./dist/electron/main.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:xpf0000/PhpWebStudy.git"
+  },
   "scripts": {
     "release": "npm run build --publish onTagOrDraft",
     "build": "node .electron-vue/build.js && electron-builder",
@@ -71,7 +75,12 @@
       "entitlementsInherit": "build/entitlements.mac.plist",
       "hardenedRuntime": true,
       "gatekeeperAssess": true
-    }
+    },
+    "publish": [
+      {
+        "provider": "github"
+      }
+    ]
   },
   "dependencies": {
     "@panter/vue-i18next": "^0.15.1",

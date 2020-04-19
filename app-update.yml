@@ -1,2 +1,1 @@
-provider: generic
-url: 'https://dl.motrix.app/release/'
+provider: github
