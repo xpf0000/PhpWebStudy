@@ -1,8 +1,6 @@
 # PhpWebStudy
 
-<a>
-  <img src="https://vip.xpfme.com/phpwebstudy/icon.png" width="256" alt="App Icon" />
-</a>
+<img src="https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/static/512x512.png" width="256" alt="App Icon" />
 
 English | [简体中文](./README-CN.md)
 
