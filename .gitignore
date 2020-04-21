@@ -1,6 +1,7 @@
 .DS_Store
 dist/
 *.provisionprofile
+build/notarize.js
 node_modules/
 npm-debug.log
 npm-debug.log.*

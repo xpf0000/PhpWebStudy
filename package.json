@@ -40,6 +40,7 @@
       "dist/electron/**/*"
     ],
     "dmg": {
+      "sign": false,
       "window": {
         "width": 540,
         "height": 380
@@ -74,8 +75,9 @@
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist",
       "hardenedRuntime": true,
-      "gatekeeperAssess": true
+      "gatekeeperAssess": false
     },
+    "afterSign": "build/notarize.js",
     "publish": [
       {
         "provider": "github"
