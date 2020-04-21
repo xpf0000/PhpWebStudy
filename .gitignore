@@ -1,7 +1,6 @@
 .DS_Store
 dist/
 *.provisionprofile
-build/*.plist
 node_modules/
 npm-debug.log
 npm-debug.log.*
