@@ -205,7 +205,7 @@ export default class Application extends EventEmitter {
       console.log('stopServerByPid pid: ', pid)
       unlinkSync(pidfile)
       try {
-        let res = execSync(`sudo kill -INT ${pid}`)
+        let res = execSync(`sudo kill -9 ${pid}`)
         console.log('stopServerByPid res: ', res)
       } catch (e) {
         console.log('stopServerByPid err: ', e)

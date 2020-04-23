@@ -15,6 +15,7 @@
   import Ipc from '@/components/Native/Ipc'
   import { mapState } from 'vuex'
   import { getLangDirection } from '@shared/utils'
+  // import { exec } from 'child-process-promise'
 
   export default {
     name: 'PhpWebStudy',
@@ -39,6 +40,7 @@
         rpcSecret: state => state.config.rpcSecret,
         theme: state => state.config.theme,
         locale: state => state.config.locale,
+        password: state => state.config.password,
         dir: state => getLangDirection(state.config.locale)
       }),
       themeClass: function () {
@@ -97,6 +99,29 @@
         this.$store.dispatch('preference/save', { server: server })
         this.$store.dispatch('task/result', '')
       })
+      // if (!this.password) {
+      //   this.$prompt('请输入电脑用户密码', {
+      //     confirmButtonText: '确定',
+      //     cancelButtonText: '取消',
+      //     inputType: 'password',
+      //     customClass: 'password-prompt'
+      //   }).then(({ value }) => {
+      //     exec(`sudo -S chmod 777 /private/etc`)
+      //       .then(result => {
+      //         console.log(`stdout: ${result.stdout}`)
+      //         console.log(`stderr: ${result.stderr}`)
+      //         return exec(`sudo -S chmod 777 /private/etc/hosts`)
+      //       })
+      //       .then(result => {
+      //         console.log('权限修改成功!!!!')
+      //       })
+      //       .catch(error => {
+      //         console.log('error: ', error)
+      //       })
+      //   }).catch(err => {
+      //     console.log('err: ', err)
+      //   })
+      // }
     },
     destroyed () {
       this.$EveBus.$off('vue:task-versions-success')

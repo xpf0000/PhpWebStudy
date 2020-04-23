@@ -62,7 +62,8 @@ export default class ConfigManager {
           'apache': {
             current: ''
           }
-        }
+        },
+        'password': ''
       }
     })
     console.log('userConfig: ', this.userConfig.get('server'))

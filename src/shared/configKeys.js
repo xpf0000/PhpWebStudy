@@ -9,7 +9,8 @@ const userKeys = [
   'run-mode',
   'session-path',
   'theme',
-  'server'
+  'server',
+  'password'
 ]
 
 const systemKeys = [

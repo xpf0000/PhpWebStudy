@@ -17,6 +17,9 @@ const actions = {
     return new Promise((resolve) => {
       api.fetchPreference()
         .then((config) => {
+          if (!config.password) {
+            config.password = ''
+          }
           if (!config.server.memcached) {
             config.server.memcached = {
               current: ''
