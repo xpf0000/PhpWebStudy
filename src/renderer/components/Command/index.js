@@ -151,6 +151,15 @@ function showAboutPanel () {
   store.dispatch('app/showAboutPanel')
 }
 
+function checkPassword (res) {
+  console.log('checkPassword: ', res)
+  commands.$EveBus.$emit('vue:check-password', res)
+}
+
+function needPassword () {
+  commands.$EveBus.$emit('vue:need-password')
+}
+
 commands.register('application:about', showAboutPanel)
 commands.register('application:system-theme', updateSystemTheme)
 commands.register('application:theme', updateTheme)
@@ -189,6 +198,9 @@ commands.register('application:host-add', hostHandleAdd)
 commands.register('application:host-del', hostHandleDel)
 commands.register('application:host-edit', hostHandleEdit)
 commands.register('application:host-list', hostList)
+
+commands.register('application:check-password', checkPassword)
+commands.register('application:need-password', needPassword)
 
 export {
   commands

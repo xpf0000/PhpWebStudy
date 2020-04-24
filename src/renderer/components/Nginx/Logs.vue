@@ -1,3 +1,4 @@
+import {execSync} from "child_process";
 
 <template>
   <div class="nginx-config">
@@ -15,6 +16,7 @@
   import '@/components/Icons/task-stop.js'
   import { join } from 'path'
   import { existsSync } from 'fs'
+  import { execSync } from 'child_process'
   import FileUtil from '@shared/FileUtil'
   export default {
     name: 'mo-nginx-logs',
@@ -73,6 +75,9 @@
       },
       init () {
         this.filepath = join(global.Server.NginxDir, `common/logs/${this.type}.log`)
+        if (existsSync(this.filepath)) {
+          execSync(`sudo chmod 777 ${this.filepath}`)
+        }
         this.getLog()
       }
     },

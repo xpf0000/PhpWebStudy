@@ -15,7 +15,6 @@
   import Ipc from '@/components/Native/Ipc'
   import { mapState } from 'vuex'
   import { getLangDirection } from '@shared/utils'
-  // import { exec } from 'child-process-promise'
 
   export default {
     name: 'PhpWebStudy',
@@ -57,14 +56,6 @@
         return `dir-${this.dir}`
       }
     },
-    methods: {
-      isRenderer: is.renderer,
-      updateRootClassName: function () {
-        const { themeClass = '', i18nClass = '', dirClass = '' } = this
-        const className = `${themeClass} ${i18nClass} ${dirClass}`
-        document.documentElement.className = className
-      }
-    },
     beforeMount: function () {
       this.updateRootClassName()
     },
@@ -99,34 +90,57 @@
         this.$store.dispatch('preference/save', { server: server })
         this.$store.dispatch('task/result', '')
       })
-      // if (!this.password) {
-      //   this.$prompt('请输入电脑用户密码', {
-      //     confirmButtonText: '确定',
-      //     cancelButtonText: '取消',
-      //     inputType: 'password',
-      //     customClass: 'password-prompt'
-      //   }).then(({ value }) => {
-      //     exec(`sudo -S chmod 777 /private/etc`)
-      //       .then(result => {
-      //         console.log(`stdout: ${result.stdout}`)
-      //         console.log(`stderr: ${result.stderr}`)
-      //         return exec(`sudo -S chmod 777 /private/etc/hosts`)
-      //       })
-      //       .then(result => {
-      //         console.log('权限修改成功!!!!')
-      //       })
-      //       .catch(error => {
-      //         console.log('error: ', error)
-      //       })
-      //   }).catch(err => {
-      //     console.log('err: ', err)
-      //   })
-      // }
+      this.$EveBus.$on('vue:check-password', res => {
+        if (res === false) {
+          this.PassPrompt.editorErrorMessage = '密码错误,请重新输入'
+        } else {
+          global.Server.Password = res
+          this.PassPromptDone && this.PassPromptDone()
+        }
+      })
+      this.$EveBus.$on('vue:need-password', res => {
+        this.checkPassword()
+      })
+      this.checkPassword()
     },
     destroyed () {
       this.$EveBus.$off('vue:task-versions-success')
     },
     mounted () {
+    },
+    methods: {
+      isRenderer: is.renderer,
+      updateRootClassName: function () {
+        const { themeClass = '', i18nClass = '', dirClass = '' } = this
+        const className = `${themeClass} ${i18nClass} ${dirClass}`
+        document.documentElement.className = className
+      },
+      checkPassword () {
+        let self = this
+        if (!this.password) {
+          this.$prompt('请输入电脑用户密码', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            inputType: 'password',
+            customClass: 'password-prompt',
+            beforeClose: function (action, instance, done) {
+              if (action === 'confirm') {
+                console.log(instance)
+                if (instance.inputValue && instance.inputValue.trim().length > 0) {
+                  self.PassPrompt = instance
+                  self.PassPromptDone = done
+                  self.$electron.ipcRenderer.send('command', 'password', instance.inputValue)
+                }
+              } else {
+                done()
+              }
+            }
+          }).then(({ value }) => {
+          }).catch(err => {
+            console.log('err: ', err)
+          })
+        }
+      }
     }
   }
 </script>

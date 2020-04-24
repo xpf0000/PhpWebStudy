@@ -17,7 +17,21 @@ class BaseManager {
     console.log('fn: ', fn)
     commands.splice(0, 1)
     console.log('commands: ', commands)
-    this[fn](commands)
+    execPromise(`echo '${global.Server.Password}' | sudo -S chmod 777 /private/etc/hosts`).then(res => {
+      this[fn](commands)
+    }).catch(err => {
+      process.send({ command: `application:need-password`, info: false })
+      if (fn === 'switchVersion') {
+        process.send({ command: 'application:task-log', info: `sudo需要电脑密码,请输入<br/>` })
+        process.send({ command: 'application:task-result', info: 'FAIL' })
+        process.send({ command: 'application:task-end', info: 1 })
+      } else {
+        process.send({ command: `application:task-${this.type}-log`, info: `sudo需要电脑密码,请输入<br/>` })
+        process.send({ command: `application:task-${this.type}-result`, info: 'FAIL' })
+        process.send({ command: `application:task-${this.type}-end`, info: 1 })
+      }
+      console.log(err)
+    })
   }
 
   _checkBrew () {

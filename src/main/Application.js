@@ -19,6 +19,7 @@ import { AUTO_CHECK_UPDATE_INTERVAL } from '@shared/constants'
 import { checkIsNeedRun, execAsync } from '@shared/utils'
 import FileUtil from '@shared/FileUtil'
 const compressing = require('compressing')
+const execPromise = require('child-process-promise').exec
 
 export default class Application extends EventEmitter {
   constructor () {
@@ -416,6 +417,21 @@ export default class Application extends EventEmitter {
       console.log('args: ', args)
       logger.log('receive command', command, ...args)
       this.emit(command, ...args)
+      console.log('command: ', command)
+      if (command === 'password') {
+        let pass = args[0]
+        console.log('pass: ', pass)
+        execPromise(`echo '${pass}' | sudo -S chmod 777 /private/etc/hosts`).then(res => {
+          console.log(res)
+          this.configManager.setUserConfig('password', pass)
+          global.Server.Password = pass
+          self.sendCommandToAll('application:check-password', pass)
+        }).catch(err => {
+          console.log('err: ', err)
+          self.sendCommandToAll('application:check-password', false)
+        })
+        return
+      }
       let list = ['nginx', 'php', 'mysql', 'apache', 'host', 'memcached', 'redis']
       if (list.indexOf(command) >= 0) {
         let child = fork(join(__static, `fork/${command}`))
