@@ -243,7 +243,7 @@ class BaseManager {
       if (existsSync(this.pidPath)) {
         let pid = readFileSync(this.pidPath, 'utf-8')
         let sign = this.type === 'apache' || this.type === 'mysql' || this.type === 'nginx' ? '-HUP' : '-USR2'
-        execPromise(`echo '${global.Server.Password}' | sudo kill ${sign} ${pid}`).then(res => {
+        execPromise(`echo '${global.Server.Password}' | sudo -S kill ${sign} ${pid}`).then(res => {
           if (!res.stderr) {
             setTimeout(() => {
               resolve(0)

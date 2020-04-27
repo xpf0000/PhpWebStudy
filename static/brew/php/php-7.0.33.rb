@@ -103,7 +103,9 @@ class PhpAT7033 < Formula
            --with-gettext=#{Formula["gettext"].opt_prefix}
            --with-gmp=#{Formula["gmp"].opt_prefix}
            --with-iconv=#{Formula["libiconv"].opt_prefix}
-           --with-jpeg
+           --with-gd
+           --with-jpeg-dir=#{Formula["jpeg"].opt_prefix}
+           --with-png-dir=#{Formula["libpng"].opt_prefix}
            --with-kerberos
            --with-layout=GNU
            --with-ldap=#{Formula["openldap"].opt_prefix}

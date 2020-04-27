@@ -90,11 +90,12 @@ class PhpAT7228 < Formula
               --with-fpm-group=_www
               --with-freetype-dir=#{Formula["freetype"].opt_prefix}
               --with-gd
+              --with-png-dir=#{Formula["libpng"].opt_prefix}
+              --with-jpeg-dir=#{Formula["jpeg"].opt_prefix}
               --with-gettext=#{Formula["gettext"].opt_prefix}
               --with-gmp=#{Formula["gmp"].opt_prefix}
               --with-iconv=#{Formula["libiconv"].opt_prefix}
               --with-icu-dir=#{Formula["icu4c"].opt_prefix}
-              --with-jpeg-dir=#{Formula["jpeg"].opt_prefix}
               --with-kerberos#{headers_path}
               --with-layout=GNU
               --with-ldap=#{Formula["openldap"].opt_prefix}
@@ -115,7 +116,6 @@ class PhpAT7228 < Formula
               --with-pdo-sqlite=#{Formula["sqlite"].opt_prefix}
               --with-pgsql=#{Formula["libpq"].opt_prefix}
               --with-pic
-              --with-png-dir=#{Formula["libpng"].opt_prefix}
               --with-pspell=#{Formula["aspell"].opt_prefix}
               --with-sodium=#{Formula["libsodium"].opt_prefix}
               --with-sqlite3=#{Formula["sqlite"].opt_prefix}
