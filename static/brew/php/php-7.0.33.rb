@@ -39,6 +39,7 @@ class PhpAT7033 < Formula
   depends_on "curl-openssl"
   depends_on "openssl@1.1"
   depends_on "icu4c@56.2"
+  depends_on "libedit"
 
   # PHP build system incorrectly links system libraries
   # see https://github.com/php/php-src/pull/3472

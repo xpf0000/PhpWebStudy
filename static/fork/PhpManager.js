@@ -58,7 +58,7 @@ class PhpManager extends BaseManager {
     let ngrb = join(global.Server.BrewFormula, `${brewVersion}.rb`)
     copyFileSync(rbtmpl, ngrb)
 
-    if (version.indexOf('php-5.') >= 0) {
+    if (version.indexOf('php-5.') >= 0 || version.indexOf('php-7.0.') >= 0) {
       copyFileSync(join(global.Server.BrewPhp, 'openssl@1.0.2u.rb'), join(global.Server.BrewFormula, 'openssl@1.0.2u.rb'))
       copyFileSync(join(global.Server.BrewPhp, 'icu4c@56.2.rb'), join(global.Server.BrewFormula, 'icu4c@56.2.rb'))
     }
