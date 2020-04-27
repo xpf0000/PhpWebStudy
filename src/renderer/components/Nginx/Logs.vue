@@ -16,8 +16,9 @@ import {execSync} from "child_process";
   import '@/components/Icons/task-stop.js'
   import { join } from 'path'
   import { existsSync } from 'fs'
-  import { execSync } from 'child_process'
   import FileUtil from '@shared/FileUtil'
+  import { exec } from 'child-process-promise'
+  import { mapState } from 'vuex'
   export default {
     name: 'mo-nginx-logs',
     data () {
@@ -35,6 +36,9 @@ import {execSync} from "child_process";
       }
     },
     computed: {
+      ...mapState('preference', {
+        password: state => state.config.password
+      })
     },
     watch: {
       type () {
@@ -54,6 +58,17 @@ import {execSync} from "child_process";
             FileUtil.writeFileAsync(this.filepath, '').then(conf => {
               this.log = ''
               this.$message.success('日志清空成功')
+            }).catch(_ => {
+              if (!this.password) {
+                this.$EveBus.$emit('vue:need-password')
+              } else {
+                exec(`echo '${this.password}' | sudo -S chmod 777 ${this.filepath}`)
+                  .then(res => {
+                    this.logDo('clean')
+                  }).catch(_ => {
+                    this.$EveBus.$emit('vue:need-password')
+                  })
+              }
             })
             break
         }
@@ -75,9 +90,6 @@ import {execSync} from "child_process";
       },
       init () {
         this.filepath = join(global.Server.NginxDir, `common/logs/${this.type}.log`)
-        if (existsSync(this.filepath)) {
-          execSync(`sudo chmod 777 ${this.filepath}`)
-        }
         this.getLog()
       }
     },

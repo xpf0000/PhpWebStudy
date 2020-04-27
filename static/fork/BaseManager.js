@@ -224,7 +224,7 @@ class BaseManager {
           arr = arr.join(' ')
           console.log('pids 1: ', arr)
           let sig = this.type === 'mysql' ? '-9' : '-INT'
-          return execPromise(`sudo kill ${sig} ${arr}`)
+          return execPromise(`echo '${global.Server.Password}' | sudo -S kill ${sig} ${arr}`)
         }
       }).then(res => {
         setTimeout(() => {
@@ -243,7 +243,7 @@ class BaseManager {
       if (existsSync(this.pidPath)) {
         let pid = readFileSync(this.pidPath, 'utf-8')
         let sign = this.type === 'apache' || this.type === 'mysql' || this.type === 'nginx' ? '-HUP' : '-USR2'
-        execPromise(`sudo kill ${sign} ${pid}`).then(res => {
+        execPromise(`echo '${global.Server.Password}' | sudo kill ${sign} ${pid}`).then(res => {
           if (!res.stderr) {
             setTimeout(() => {
               resolve(0)
@@ -298,6 +298,17 @@ class BaseManager {
         reject(code)
       }
     })
+  }
+
+  _handleLog (info) {
+    let str = info.toString().replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>')
+    str += '<br/>'
+    str = str.replace(/ /g, '&ensp;')
+    if (this.isInstall) {
+      process.send({ command: 'application:task-log', info: str })
+    } else {
+      process.send({ command: `application:task-${this.type}-log`, info: str })
+    }
   }
 }
 module.exports = BaseManager

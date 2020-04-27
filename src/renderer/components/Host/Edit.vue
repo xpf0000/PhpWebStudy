@@ -109,6 +109,9 @@
         apacheRunning: state => state.stat.apache,
         nginxRunning: state => state.stat.nginx,
         hosts: state => state.hosts
+      }),
+      ...mapState('preference', {
+        password: state => state.config.password
       })
     },
     watch: {
@@ -199,28 +202,20 @@
           console.error('无权访问')
         }
         if (!access) {
-          this.$prompt('请输入电脑用户密码', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            inputType: 'password',
-            customClass: 'password-prompt'
-          }).then(({ value }) => {
-            exec(`sudo -S chmod 777 /private/etc`)
+          if (!this.password) {
+            this.$EveBus.$emit('vue:need-password')
+          } else {
+            exec(`echo '${this.password}' | sudo -S chmod 777 /private/etc`)
               .then(result => {
-                console.log(`stdout: ${result.stdout}`)
-                console.log(`stderr: ${result.stderr}`)
-                return exec(`sudo -S chmod 777 /private/etc/hosts`)
+                return exec(`echo '${this.password}' | sudo -S chmod 777 /private/etc/hosts`)
               })
               .then(result => {
-                console.log('权限修改成功!!!!')
                 this.$electron.ipcRenderer.send('command', 'host', 'handleHost', this.item, flag, this.edit)
               })
-              .catch(error => {
-                console.log('error: ', error)
+              .catch(_ => {
+                this.$message.error('操作失败,hosts文件权限不正确')
               })
-          }).catch(err => {
-            console.log('err: ', err)
-          })
+          }
         } else {
           this.$electron.ipcRenderer.send('command', 'host', 'handleHost', this.item, flag, this.edit)
         }

@@ -19,7 +19,8 @@
   import { join } from 'path'
   import { existsSync } from 'fs'
   import FileUtil from '@shared/FileUtil'
-  import { execSync } from 'child_process'
+  import { exec } from 'child-process-promise'
+  import { mapState } from 'vuex'
   export default {
     name: 'mo-host-logs',
     data () {
@@ -35,6 +36,9 @@
     props: {
     },
     computed: {
+      ...mapState('preference', {
+        password: state => state.config.password
+      })
     },
     watch: {
     },
@@ -51,6 +55,17 @@
             FileUtil.writeFileAsync(this.filepath, '').then(conf => {
               this.log = ''
               this.$message.success('日志清空成功')
+            }).catch(_ => {
+              if (!this.password) {
+                this.$EveBus.$emit('vue:need-password')
+              } else {
+                exec(`echo '${this.password}' | sudo -S chmod 777 ${this.filepath}`)
+                  .then(res => {
+                    this.logDo('clean')
+                  }).catch(_ => {
+                    this.$EveBus.$emit('vue:need-password')
+                  })
+              }
             })
             break
         }
@@ -73,9 +88,6 @@
       initType (type) {
         this.type = type
         this.filepath = this.logfile[type]
-        if (existsSync(this.filepath)) {
-          execSync(`sudo chmod 777 ${this.filepath}`)
-        }
         this.getLog()
       },
       init () {

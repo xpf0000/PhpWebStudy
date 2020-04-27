@@ -16,6 +16,8 @@
   import { join } from 'path'
   import { existsSync } from 'fs'
   import FileUtil from '@shared/FileUtil'
+  import { exec } from 'child-process-promise'
+  import { mapState } from 'vuex'
   export default {
     name: 'mo-memcached-logs',
     data () {
@@ -29,6 +31,9 @@
     props: {
     },
     computed: {
+      ...mapState('preference', {
+        password: state => state.config.password
+      })
     },
     watch: {
     },
@@ -45,6 +50,17 @@
             FileUtil.writeFileAsync(this.filepath, '').then(conf => {
               this.log = ''
               this.$message.success('日志清空成功')
+            }).catch(_ => {
+              if (!this.password) {
+                this.$EveBus.$emit('vue:need-password')
+              } else {
+                exec(`echo '${this.password}' | sudo -S chmod 777 ${this.filepath}`)
+                  .then(res => {
+                    this.logDo('clean')
+                  }).catch(_ => {
+                    this.$EveBus.$emit('vue:need-password')
+                  })
+              }
             })
             break
         }

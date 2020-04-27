@@ -88,7 +88,8 @@ export default class Application extends EventEmitter {
     global.Server.BrewApache = join(__static, 'brew/apache')
     global.Server.BrewMemcached = join(__static, 'brew/memcached')
     global.Server.BrewRedis = join(__static, 'brew/redis')
-
+    global.Server.Password = this.configManager.getUserConfig('password')
+    console.log('global.Server.Password: ', global.Server.Password)
     execAsync('which', ['brew']).then(res => {
       console.log('which res: ', res)
       execAsync('brew', ['--repo']).then(p => {
@@ -206,7 +207,7 @@ export default class Application extends EventEmitter {
       console.log('stopServerByPid pid: ', pid)
       unlinkSync(pidfile)
       try {
-        let res = execSync(`sudo kill -9 ${pid}`)
+        let res = execSync(`echo '${global.Server.Password}' | kill -9 ${pid}`)
         console.log('stopServerByPid res: ', res)
       } catch (e) {
         console.log('stopServerByPid err: ', e)

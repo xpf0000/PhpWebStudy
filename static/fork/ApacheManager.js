@@ -4,9 +4,10 @@ const readFileSync = require('fs').readFileSync
 const writeFileSync = require('fs').writeFileSync
 const copyFileSync = require('fs').copyFileSync
 const Shell = require('shelljs')
-const { spawn } = require('child_process')
 const Utils = require('./Utils')
 const BaseManager = require('./BaseManager')
+const execPromise = require('child-process-promise').exec
+
 class ApacheManager extends BaseManager {
   // eslint-disable-next-line no-useless-constructor
   constructor () {
@@ -72,8 +73,13 @@ class ApacheManager extends BaseManager {
         reject(new Error('启动文件不存在,服务器启动失败'))
         return
       }
-      const child = spawn('sudo', [bin, '-k', 'start'], { env: Shell.env })
-      this._childHandle(child, resolve, reject)
+      execPromise(`echo '${global.Server.Password}' | sudo -S ${bin} -k start`).then(res => {
+        this._handleLog(res.stdout)
+        resolve(0)
+      }).catch(err => {
+        this._handleLog(err)
+        reject(new Error(''))
+      })
     })
   }
 }

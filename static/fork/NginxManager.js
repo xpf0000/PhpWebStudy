@@ -4,8 +4,9 @@ const readFileSync = require('fs').readFileSync
 const writeFileSync = require('fs').writeFileSync
 // const copyFileSync = require('fs').copyFileSync
 const Shell = require('shelljs')
-const { spawn } = require('child_process')
 const BaseManager = require('./BaseManager')
+const execPromise = require('child-process-promise').exec
+
 class NginxManager extends BaseManager {
   // eslint-disable-next-line no-useless-constructor
   constructor () {
@@ -66,9 +67,14 @@ class NginxManager extends BaseManager {
       let pid = join(global.Server.NginxDir, 'common/logs/nginx.pid')
       let errlog = join(global.Server.NginxDir, 'common/logs/error.log')
       let g = `pid ${pid};error_log ${errlog};`
-      process.send({ command: 'application:task-log', info: `sudo ${bin} -c ${c} -g ${g}<br/>` })
-      const child = spawn('sudo', [bin, '-c', c, '-g', g], { env: Shell.env })
-      this._childHandle(child, resolve, reject)
+      // process.send({ command: 'application:task-log', info: `sudo ${bin} -c ${c} -g ${g}<br/>` })
+      execPromise(`echo '${global.Server.Password}' | sudo -S ${bin} -c ${c} -g '${g}'`).then(res => {
+        this._handleLog(res.stdout)
+        resolve(0)
+      }).catch(err => {
+        this._handleLog(err)
+        reject(new Error(''))
+      })
     })
   }
 }
