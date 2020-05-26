@@ -98,7 +98,7 @@ class PhpAT5538 < Formula
            --with-ffi
            --with-fpm-user=_www
            --with-fpm-group=_www
-           --with-freetype-dir=#{Formula["freetype"].opt_prefix}
+           --with-freetype
            --with-gd
            --with-jpeg-dir=#{Formula["jpeg"].opt_prefix}
            --with-png-dir=#{Formula["libpng"].opt_prefix}
