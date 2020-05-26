@@ -62,7 +62,7 @@ export default class Application extends EventEmitter {
 
   initServerDir () {
     console.log('userData: ', app.getPath('userData'))
-    let runpath = dirname(process.execPath)
+    let runpath = app.getPath('userData')
     global.Server = {}
     global.Server.BaseDir = join(runpath, 'server')
     FileUtil.createFolder(global.Server.BaseDir)
