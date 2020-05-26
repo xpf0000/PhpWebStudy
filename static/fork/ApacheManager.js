@@ -39,8 +39,8 @@ class ApacheManager extends BaseManager {
         let logs = join(global.Server.ApacheDir, 'common/logs')
         Utils.createFolder(logs)
         content = content.replace(/#LOGPATH#/g, logs)
-        content += `\nPidFile ${logs}/httpd.pid\n` +
-          `IncludeOptional ${vhost}/*.conf`
+        content += `\nPidFile "${logs}/httpd.pid"\n` +
+          `IncludeOptional "${vhost}/*.conf"`
         writeFileSync(conf, content)
         writeFileSync(join(vpath, 'conf/httpd.conf.default'), content)
         return this._stopServer()
