@@ -100,7 +100,7 @@ class PhpAT7033 < Formula
            --with-ffi
            --with-fpm-user=_www
            --with-fpm-group=_www
-           --with-freetype
+           --with-freetype-dir=#{Formula["freetype"].opt_prefix}
            --with-gettext=#{Formula["gettext"].opt_prefix}
            --with-gmp=#{Formula["gmp"].opt_prefix}
            --with-iconv=#{Formula["libiconv"].opt_prefix}
