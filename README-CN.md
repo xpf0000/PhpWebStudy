@@ -24,6 +24,9 @@ PhpWebStudy 是一款mac下PHP和web开发环境管理工具,包含php,nginx,apa
 ## 🖥 应用界面
 
 ![scan.png](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/scan.jpg)
+![screen1.gif](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/screen1.gif)
+![screen2.gif](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/screen2.gif)
+![screen3.gif](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/screen3.gif)
 
 ## ⌨️ 本地开发
 

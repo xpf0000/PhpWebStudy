@@ -24,6 +24,9 @@ Download from [GitHub](https://github.com/xpf0000/PhpWebStudy/releases) Releases
 ## 🖥 User Interface
 
 ![scan.png](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/scan.jpg)
+![screen1.gif](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/screen1.gif)
+![screen2.gif](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/screen2.gif)
+![screen3.gif](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/screen3.gif)
 
 ## ⌨️ Development
 
