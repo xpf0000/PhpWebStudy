@@ -33,6 +33,7 @@
   import Edit from './Edit'
   import List from './List'
   import Logs from './Logs'
+  const Assign = require('assign-deep')
   export default {
     name: 'mo-host-panel',
     data () {
@@ -59,25 +60,21 @@
     created: function () {
       this.$EveBus.$on('Host-Edit-Close', data => {
         let ref = this.$refs['host-edit-drawer']
-        console.log('ref: ', ref)
         ref.hide()
       })
       this.$EveBus.$on('Host-Edit-Item', data => {
         this.drawer = true
         this.$nextTick(() => {
-          console.log('refs: ', this.$refs)
           let ref = this.$refs['host-edit']
-          console.log('ref: ', ref)
-          console.log('ref.item: ', ref.item)
-          Vue.set(ref, 'item', JSON.parse(JSON.stringify(data)))
-          Vue.set(ref, 'edit', JSON.parse(JSON.stringify(data)))
+          let item = Assign(ref.item, JSON.parse(JSON.stringify(data)))
+          Vue.set(ref, 'item', item)
+          Vue.set(ref, 'edit', JSON.parse(JSON.stringify(item)))
           ref.isEdit = true
         })
       })
       this.$EveBus.$on('Host-Logs-Item', data => {
         this.logshow = true
         this.$nextTick(() => {
-          console.log('refs: ', this.$refs)
           let ref = this.$refs['host-logs']
           ref.name = data.name
           ref.type = 'nginx-access'

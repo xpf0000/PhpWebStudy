@@ -1,6 +1,6 @@
 {
   "name": "PhpWebStudy",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "PHP and Web develop environment manager for Mac",
   "homepage": "https://phpstudy.xpfme.com",
   "author": {
@@ -86,6 +86,7 @@
   },
   "dependencies": {
     "@panter/vue-i18next": "^0.15.1",
+    "assign-deep": "^1.0.1",
     "axios": "^0.19.2",
     "blob-util": "^2.0.2",
     "child-process-promise": "^2.2.1",

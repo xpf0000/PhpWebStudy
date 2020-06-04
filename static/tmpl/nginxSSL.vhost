@@ -1,7 +1,7 @@
 server
 {
-    listen 80;
-    listen 443 ssl http2;
+    listen #Port_Nginx#;
+    listen #Port_Nginx_SSL# ssl http2;
     server_name #Server_Alias#;
     index index.php index.html index.htm default.php default.htm default.html;
     root #Server_Root#;

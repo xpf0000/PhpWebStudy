@@ -1,4 +1,4 @@
-<VirtualHost *:8080>
+<VirtualHost *:#Port_Apache#>
     ServerAdmin webmaster@example.com
     DocumentRoot "#Server_Root#"
     ServerName #Server_Name#

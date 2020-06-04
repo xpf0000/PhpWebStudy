@@ -1,6 +1,6 @@
 server
 {
-    listen 80;
+    listen #Port_Nginx#;
     server_name #Server_Alias#;
     index index.php index.html index.htm default.php default.htm default.html;
     root #Server_Root#;

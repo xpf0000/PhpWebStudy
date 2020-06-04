@@ -143,6 +143,8 @@ class HostManager {
           .replace(/#Log_Path#/g, logpath)
           .replace(/#Server_Cert#/g, host.ssl.cert)
           .replace(/#Server_CertKey#/g, host.ssl.key)
+          .replace(/#Port_Nginx#/g, host.port.nginx)
+          .replace(/#Port_Nginx_SSL#/g, host.port.nginx_ssl)
         writeFileSync(nvhost, ntmpl)
 
         let atmpl = readFileSync(apachetmpl, 'utf-8')
@@ -153,6 +155,8 @@ class HostManager {
           .replace(/#Log_Path#/g, logpath)
           .replace(/#Server_Cert#/g, host.ssl.cert)
           .replace(/#Server_CertKey#/g, host.ssl.key)
+          .replace(/#Port_Apache#/g, host.port.apache)
+          .replace(/#Port_Apache_SSL#/g, host.port.apache_ssl)
         writeFileSync(avhost, atmpl)
 
         let rewrite = host.nginx.rewrite.trim()

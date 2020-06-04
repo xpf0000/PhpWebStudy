@@ -20,6 +20,25 @@
         </div>
       </div>
 
+      <div class="plant-title">Port</div>
+      <div class="main">
+        <div class="port-set mb-20">
+          <div class="port-type">
+            Nginx
+          </div>
+          <input type="number" :class="'input'+(errs['port_nginx'] ? ' error' : '')" placeholder="default: 80" v-model.number="item.port.nginx"></input>
+        </div>
+
+        <div class="port-set mb-20">
+          <div class="port-type">
+            Apache
+          </div>
+          <input type="number" :class="'input'+(errs['port_apache'] ? ' error' : '')" placeholder="default: 8080" v-model.number="item.port.apache"></input>
+        </div>
+
+      </div>
+
+
       <div class="plant-title">SSL</div>
 
       <div class="main">
@@ -42,6 +61,24 @@
           <div class="icon-block" @click="chooseRoot('certkey', true)">
             <mo-icon class="choose" name="folder" width="18" height="18" />
           </div>
+        </div>
+
+        <div class="ssl-switch mb-20 mt-20" v-if="item.useSSL">
+          <span>Port</span>
+        </div>
+
+        <div class="port-set port-ssl mb-20" v-if="item.useSSL">
+          <div class="port-type">
+            Nginx
+          </div>
+          <input type="number" :class="'input'+(errs['port_nginx_ssl'] ? ' error' : '')" placeholder="default: 443" v-model.number="item.port.nginx_ssl"></input>
+        </div>
+
+        <div class="port-set port-ssl mb-20" v-if="item.useSSL">
+          <div class="port-type">
+            Apache
+          </div>
+          <input type="number" :class="'input'+(errs['port_apache_ssl'] ? ' error' : '')" placeholder="default: 8443" v-model.number="item.port.apache_ssl"></input>
         </div>
 
       </div>
@@ -78,6 +115,12 @@
             cert: '',
             key: ''
           },
+          port: {
+            nginx: 80,
+            apache: 8080,
+            nginx_ssl: 443,
+            apache_ssl: 8443
+          },
           nginx: {
             rewrite: ''
           },
@@ -89,7 +132,11 @@
           name: false,
           root: false,
           cert: false,
-          certkey: false
+          certkey: false,
+          port_nginx: false,
+          port_apache: false,
+          port_nginx_ssl: false,
+          port_apache_ssl: false
         },
         isEdit: false
       }
@@ -117,7 +164,6 @@
     watch: {
       item: {
         handler (n, o) {
-          console.log('item has changed !!!')
           for (let k in this.errs) {
             this.errs[k] = false
           }
@@ -126,7 +172,6 @@
         deep: true
       },
       'item.name': function () {
-        console.log('item.name has changed !!')
         for (let h of this.hosts) {
           if (h.name === this.item.name && h.id !== this.item.id) {
             this.errs['name'] = true
@@ -140,7 +185,6 @@
         this.$EveBus.$emit('Host-Edit-Close')
       },
       chooseRoot (flag, choosefile = false) {
-        console.log('chooseRoot !!!!!!')
         const self = this
         let opt = ['openDirectory', 'createDirectory']
         if (choosefile) {
@@ -153,7 +197,6 @@
             return
           }
           const [path] = filePaths
-          console.log('path: ', path)
           switch (flag) {
             case 'root':
               self.item.root = path
@@ -168,6 +211,22 @@
         })
       },
       checkItem () {
+        if (!Number.isInteger(this.item.port.nginx)) {
+          this.errs['port_nginx'] = true
+        }
+        if (!Number.isInteger(this.item.port.apache)) {
+          this.errs['port_apache'] = true
+        }
+
+        if (this.item.useSSL) {
+          if (!Number.isInteger(this.item.port.nginx_ssl)) {
+            this.errs['port_nginx_ssl'] = true
+          }
+          if (!Number.isInteger(this.item.port.apache_ssl)) {
+            this.errs['port_apache_ssl'] = true
+          }
+        }
+
         this.errs['name'] = this.item.name.length === 0
         this.errs['root'] = this.item.root.length === 0
         if (this.item.useSSL) {
@@ -180,7 +239,6 @@
             break
           }
         }
-        console.log('this.errs: ', this.errs)
         for (let k in this.errs) {
           if (this.errs[k]) {
             return false
@@ -388,6 +446,31 @@
           display: flex;
           align-items: center;
           justify-content: space-between;
+        }
+        .port-set{
+          display: flex;
+          align-items: flex-end;
+          .port-type{
+            width: 50px;
+            margin-right: 30px;
+            flex-shrink: 0;
+          }
+          .input{
+            flex: 1;
+            &::-webkit-outer-spin-button{
+              -webkit-appearance: none !important;
+              margin: 0;
+            }
+            &::-webkit-inner-spin-button{
+              -webkit-appearance: none !important;
+              margin: 0;
+            }
+          }
+          &.port-ssl{
+            .input{
+              margin-right: 48px;
+            }
+          }
         }
       }
       .plant-title{

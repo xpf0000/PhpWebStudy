@@ -1,4 +1,4 @@
-<VirtualHost *:8080>
+<VirtualHost *:#Port_Apache#>
     ServerAdmin webmaster@example.com
     DocumentRoot "#Server_Root#"
     ServerName #Server_Name#
@@ -26,7 +26,7 @@
         DirectoryIndex index.php index.html index.htm default.php default.html default.htm
     </Directory>
 </VirtualHost>
-<VirtualHost *:8443>
+<VirtualHost *:#Port_Apache_SSL#>
     ServerAdmin webmasterexample.com
     DocumentRoot "#Server_Root#"
     ServerName SSL.#Server_Name#
