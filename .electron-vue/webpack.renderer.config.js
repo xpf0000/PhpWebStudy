@@ -165,7 +165,7 @@ let rendererConfig = {
       }
     }),
     new HtmlWebpackPlugin({
-      title: 'PhpWebStudy',
+      title: 'BuildPhp',
       filename: 'index.html',
       chunks: ['index'],
       template: path.resolve(__dirname, '../src/index.ejs'),

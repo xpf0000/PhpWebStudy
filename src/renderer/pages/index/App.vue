@@ -17,7 +17,7 @@
   import { getLangDirection } from '@shared/utils'
 
   export default {
-    name: 'PhpWebStudy',
+    name: 'BuildPhp',
     components: {
       [TitleBar.name]: TitleBar,
       [Ipc.name]: Ipc

@@ -1,14 +1,14 @@
-# PhpWebStudy
+# BuildPhp
 
-<img src="https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/static/512x512.png" width="256" alt="App Icon" />
+<img src="https://raw.githubusercontent.com/xpf0000/BuildPhp/master/static/512x512.png" width="256" alt="App Icon" />
 
 [English](./README.md) | 简体中文
 
 ## mac下PHP和web开发环境管理工具
 
-[![GitHub release](https://img.shields.io/github/release/xpf0000/PhpWebStudy.svg)](https://github.com/xpf0000/PhpWebStudy/releases)  [![Total Downloads](https://img.shields.io/github/downloads/xpf0000/PhpWebStudy/total.svg)](https://github.com/xpf0000/PhpWebStudy/releases)
+[![GitHub release](https://img.shields.io/github/release/xpf0000/BuildPhp.svg)](https://github.com/xpf0000/BuildPhp/releases)  [![Total Downloads](https://img.shields.io/github/downloads/xpf0000/BuildPhp/total.svg)](https://github.com/xpf0000/BuildPhp/releases)
 
-PhpWebStudy 是一款mac下PHP和web开发环境管理工具,包含php,nginx,apache,msyql,memcached,redis以及host管理
+BuildPhp 是一款mac下PHP和web开发环境管理工具,包含php,nginx,apache,msyql,memcached,redis以及host管理
 ## ✨ 特性
 
 - 简洁明了的图形操作界面
@@ -19,27 +19,27 @@ PhpWebStudy 是一款mac下PHP和web开发环境管理工具,包含php,nginx,apa
 
 ## 💽 安装稳定版
 
-[GitHub](https://github.com/xpf0000/PhpWebStudy/releases) 提供了已经编译好的稳定版安装包，当然你也可以自己克隆代码编译打包。
+[GitHub](https://github.com/xpf0000/BuildPhp/releases) 提供了已经编译好的稳定版安装包，当然你也可以自己克隆代码编译打包。
 
 ## 🖥 应用界面
 
-![scan.png](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/scan.jpg)
-![screen1.gif](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/screen1.gif)
-![screen2.gif](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/screen2.gif)
-![screen3.gif](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/screen3.gif)
+![scan.png](https://raw.githubusercontent.com/xpf0000/BuildPhp/master/screenshots/scan.jpg)
+![screen1.gif](https://raw.githubusercontent.com/xpf0000/BuildPhp/master/screenshots/screen1.gif)
+![screen2.gif](https://raw.githubusercontent.com/xpf0000/BuildPhp/master/screenshots/screen2.gif)
+![screen3.gif](https://raw.githubusercontent.com/xpf0000/BuildPhp/master/screenshots/screen3.gif)
 
 ## ⌨️ 本地开发
 
 ### 克隆代码
 
 ```bash
-git clone git@github.com:xpf0000/PhpWebStudy.git
+git clone git@github.com:xpf0000/BuildPhp.git
 ```
 
 ### 安装依赖
 
 ```bash
-cd PhpWebStudy
+cd BuildPhp
 npm install
 ```
 

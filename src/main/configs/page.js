@@ -3,7 +3,7 @@ import is from 'electron-is'
 export default {
   index: {
     attrs: {
-      title: 'PhpWebStudy',
+      title: 'BuildPhp',
       width: 1280,
       height: 768,
       minWidth: 400,

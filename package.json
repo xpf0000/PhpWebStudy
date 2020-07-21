@@ -1,6 +1,6 @@
 {
-  "name": "PhpWebStudy",
-  "version": "1.0.2",
+  "name": "BuildPhp",
+  "version": "1.0.3",
   "description": "PHP and Web develop environment manager for Mac",
   "homepage": "https://phpstudy.xpfme.com",
   "author": {
@@ -12,7 +12,7 @@
   "main": "./dist/electron/main.js",
   "repository": {
     "type": "git",
-    "url": "git@github.com:xpf0000/PhpWebStudy.git"
+    "url": "git@github.com:xpf0000/BuildPhp.git"
   },
   "scripts": {
     "release": "npm run build --publish onTagOrDraft",
@@ -30,7 +30,7 @@
     "postinstall": "electron-builder install-app-deps && npm run lint:fix"
   },
   "build": {
-    "productName": "PhpWebStudy",
+    "productName": "BuildPhp",
     "appId": "phpstudy.xpfme.com",
     "asar": true,
     "directories": {

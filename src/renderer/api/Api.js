@@ -69,7 +69,7 @@ export default class Api {
   savePreferenceToNativeStore (params = {}) {
     const { user, system, others } = separateConfig(params)
     if (!isEmpty(system)) {
-      console.info('[PhpWebStudy] save system config: ', system)
+      console.info('[BuildPhp] save system config: ', system)
       ipcRenderer.send('command', 'application:save-preference', {
         system
       })
@@ -77,14 +77,14 @@ export default class Api {
     }
 
     if (!isEmpty(user)) {
-      console.info('[PhpWebStudy] save user config: ', user)
+      console.info('[BuildPhp] save user config: ', user)
       ipcRenderer.send('command', 'application:save-preference', {
         user
       })
     }
 
     if (!isEmpty(others)) {
-      console.info('[PhpWebStudy] save config found illegal key: ', others)
+      console.info('[BuildPhp] save config found illegal key: ', others)
     }
   }
 }

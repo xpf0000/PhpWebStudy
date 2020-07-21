@@ -1,5 +1,5 @@
 export default {
-  'official-website': 'PhpWebStudy Website',
+  'official-website': 'BuildPhp Website',
   'manual': 'Manual',
   'release-notes': 'Release Notes...',
   'report-problem': 'Report Problem',

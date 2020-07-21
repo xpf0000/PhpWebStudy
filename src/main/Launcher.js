@@ -95,7 +95,7 @@ export default class Launcher extends EventEmitter {
 
     app.on('activate', () => {
       if (global.application) {
-        logger.info('[PhpWebStudy] activate')
+        logger.info('[BuildPhp] activate')
         global.application.showPage('index')
       }
     })
@@ -103,11 +103,11 @@ export default class Launcher extends EventEmitter {
 
   handleAppWillQuit () {
     app.on('will-quit', () => {
-      logger.info('[PhpWebStudy] will-quit')
+      logger.info('[BuildPhp] will-quit')
       if (global.application) {
         global.application.stop()
       } else {
-        logger.info('[PhpWebStudy] global.application is null !!!')
+        logger.info('[BuildPhp] global.application is null !!!')
       }
     })
   }

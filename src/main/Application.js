@@ -197,7 +197,7 @@ export default class Application extends EventEmitter {
   }
 
   stop () {
-    logger.info('[PhpWebStudy] application stop !!!')
+    logger.info('[BuildPhp] application stop !!!')
     this.stopServer()
   }
 
@@ -336,11 +336,11 @@ export default class Application extends EventEmitter {
       console.log('application:save-preference.config====>', config)
       const { system, user } = config
       if (!isEmpty(system)) {
-        console.info('[PhpWebStudy] main save system config: ', system)
+        console.info('[BuildPhp] main save system config: ', system)
         this.configManager.setSystemConfig(system)
       }
       if (!isEmpty(user)) {
-        console.info('[PhpWebStudy] main save user config: ', user)
+        console.info('[BuildPhp] main save user config: ', user)
         this.configManager.setUserConfig(user)
       }
     })
@@ -389,7 +389,7 @@ export default class Application extends EventEmitter {
     })
 
     this.on('application:change-locale', (locale) => {
-      logger.info('[PhpWebStudy] application:change-locale===>', locale)
+      logger.info('[BuildPhp] application:change-locale===>', locale)
       this.localeManager.changeLanguageByLocale(locale)
         .then(() => {
           this.menuManager.setup(locale)

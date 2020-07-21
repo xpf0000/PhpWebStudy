@@ -1,14 +1,14 @@
-# PhpWebStudy
+# BuildPhp
 
-<img src="https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/static/512x512.png" width="256" alt="App Icon" />
+<img src="https://raw.githubusercontent.com/xpf0000/BuildPhp/master/static/512x512.png" width="256" alt="App Icon" />
 
 English | [简体中文](./README-CN.md)
 
 ## PHP and Web develop environment manager for Mac
 
-[![GitHub release](https://img.shields.io/github/release/xpf0000/PhpWebStudy.svg)](https://github.com/xpf0000/PhpWebStudy/releases)  [![Total Downloads](https://img.shields.io/github/downloads/xpf0000/PhpWebStudy/total.svg)](https://github.com/xpf0000/PhpWebStudy/releases)
+[![GitHub release](https://img.shields.io/github/release/xpf0000/BuildPhp.svg)](https://github.com/xpf0000/BuildPhp/releases)  [![Total Downloads](https://img.shields.io/github/downloads/xpf0000/BuildPhp/total.svg)](https://github.com/xpf0000/BuildPhp/releases)
 
-PhpWebStudy is a develop environment manager for Mac,include php,nginx,apache,msyql,memcached,redis and host manager
+BuildPhp is a develop environment manager for Mac,include php,nginx,apache,msyql,memcached,redis and host manager
 ## ✨ Features
 
 - Simple and clear user interface
@@ -19,27 +19,27 @@ PhpWebStudy is a develop environment manager for Mac,include php,nginx,apache,ms
 
 ## 💽 Installation
 
-Download from [GitHub](https://github.com/xpf0000/PhpWebStudy/releases) Releases and install it.
+Download from [GitHub](https://github.com/xpf0000/BuildPhp/releases) Releases and install it.
 
 ## 🖥 User Interface
 
-![scan.png](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/scan.jpg)
-![screen1.gif](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/screen1.gif)
-![screen2.gif](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/screen2.gif)
-![screen3.gif](https://raw.githubusercontent.com/xpf0000/PhpWebStudy/master/screenshots/screen3.gif)
+![scan.png](https://raw.githubusercontent.com/xpf0000/BuildPhp/master/screenshots/scan.jpg)
+![screen1.gif](https://raw.githubusercontent.com/xpf0000/BuildPhp/master/screenshots/screen1.gif)
+![screen2.gif](https://raw.githubusercontent.com/xpf0000/BuildPhp/master/screenshots/screen2.gif)
+![screen3.gif](https://raw.githubusercontent.com/xpf0000/BuildPhp/master/screenshots/screen3.gif)
 
 ## ⌨️ Development
 
 ### Clone Code
 
 ```bash
-git clone git@github.com:xpf0000/PhpWebStudy.git
+git clone git@github.com:xpf0000/BuildPhp.git
 ```
 
 ### Install Dependencies
 
 ```bash
-cd PhpWebStudy
+cd BuildPhp
 npm install
 ```
 If you like [Yarn](https://yarnpkg.com/), you can also use yarn to install dependencies.

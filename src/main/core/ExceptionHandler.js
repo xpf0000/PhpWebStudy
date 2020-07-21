@@ -22,7 +22,7 @@ export default class ExceptionHandler {
     const { showDialog } = this.options
     process.on('uncaughtException', (err) => {
       const { message, stack } = err
-      logger.error(`[PhpWebStudy] Uncaught exception: ${message}`)
+      logger.error(`[BuildPhp] Uncaught exception: ${message}`)
       logger.error(stack)
 
       if (showDialog && app.isReady()) {

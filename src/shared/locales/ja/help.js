@@ -1,5 +1,5 @@
 export default {
-  'official-website': 'PhpWebStudy 公式サイト',
+  'official-website': 'BuildPhp 公式サイト',
   'manual': '使用説明',
   'release-notes': 'リリースノート...',
   'report-problem': '問題を報告',

@@ -1,5 +1,5 @@
 export default {
-  'app': 'PhpWebStudy',
+  'app': 'BuildPhp',
   'file': 'Fichier',
   'task': 'Tâche',
   'edit': 'Editer',

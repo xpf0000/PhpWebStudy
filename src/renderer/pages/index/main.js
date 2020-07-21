@@ -63,7 +63,7 @@ function init (config) {
 
 store.dispatch('preference/fetchPreference')
   .then((config) => {
-    console.info('[PhpWebStudy] fetchPreference===>', config)
+    console.info('[BuildPhp] fetchPreference===>', config)
     init(config)
   })
   .catch((err) => {
