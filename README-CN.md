@@ -16,6 +16,7 @@ BuildPhp 是一款mac下PHP和web开发环境管理工具,包含php,nginx,apache
 - 各软件自定义配置
 - 日志文件即时查看
 - host管理
+- 常见PHP项目url rewrite一键设置
 
 ## 💽 安装稳定版
 

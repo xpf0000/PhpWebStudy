@@ -87,6 +87,15 @@
 
       <div class="main">
 
+        <el-select @change="rewriteChange" v-model="rewriteKey" placeholder="当前">
+          <el-option
+            v-for="key in rewrites"
+            :key="key"
+            :label="key"
+            :value="key">
+          </el-option>
+        </el-select>
+
         <textarea type="text" class="input-textarea nginx-rewrite" placeholder="url rewrite" v-model.trim="item.nginx.rewrite"></textarea>
 
       </div>
@@ -97,235 +106,267 @@
 </template>
 
 <script>
-  import '@/components/Icons/folder.js'
-  import '@/components/Icons/back.js'
-  import { accessSync, constants } from 'fs'
-  import { exec } from 'child-process-promise'
-  import { mapState } from 'vuex'
-  export default {
-    name: 'mo-host-edit',
-    data () {
-      return {
-        item: {
-          id: 0,
-          name: '',
-          alias: '',
-          useSSL: false,
-          ssl: {
-            cert: '',
-            key: ''
-          },
-          port: {
-            nginx: 80,
-            apache: 8080,
-            nginx_ssl: 443,
-            apache_ssl: 8443
-          },
-          nginx: {
-            rewrite: ''
-          },
-          url: '',
-          root: ''
-        },
-        edit: {},
-        errs: {
-          name: false,
-          root: false,
-          cert: false,
-          certkey: false,
-          port_nginx: false,
-          port_apache: false,
-          port_nginx_ssl: false,
-          port_apache_ssl: false
-        },
-        isEdit: false
-      }
-    },
-    components: {
-    },
-    props: {
-    },
-    computed: {
-      ...mapState('apache', {
-        apacheTaskRunning: state => state.taskRunning
-      }),
-      ...mapState('nginx', {
-        nginxTaskRunning: state => state.taskRunning
-      }),
-      ...mapState('app', {
-        apacheRunning: state => state.stat.apache,
-        nginxRunning: state => state.stat.nginx,
-        hosts: state => state.hosts
-      }),
-      ...mapState('preference', {
-        password: state => state.config.password
-      })
-    },
-    watch: {
+import FileUtil from '@shared/FileUtil'
+import '@/components/Icons/folder.js'
+import '@/components/Icons/back.js'
+import { accessSync, constants } from 'fs'
+import { exec } from 'child-process-promise'
+import { mapState } from 'vuex'
+import { join } from 'path'
+let rewrites = {}
+export default {
+  name: 'mo-host-edit',
+  data () {
+    return {
       item: {
-        handler (n, o) {
-          for (let k in this.errs) {
-            this.errs[k] = false
-          }
+        id: 0,
+        name: '',
+        alias: '',
+        useSSL: false,
+        ssl: {
+          cert: '',
+          key: ''
         },
-        immediate: true,
-        deep: true
+        port: {
+          nginx: 80,
+          apache: 8080,
+          nginx_ssl: 443,
+          apache_ssl: 8443
+        },
+        nginx: {
+          rewrite: ''
+        },
+        url: '',
+        root: ''
       },
-      'item.name': function () {
-        for (let h of this.hosts) {
-          if (h.name === this.item.name && h.id !== this.item.id) {
-            this.errs['name'] = true
-            break
-          }
+      edit: {},
+      errs: {
+        name: false,
+        root: false,
+        cert: false,
+        certkey: false,
+        port_nginx: false,
+        port_apache: false,
+        port_nginx_ssl: false,
+        port_apache_ssl: false
+      },
+      isEdit: false,
+      rewrites: [],
+      rewriteKey: ''
+    }
+  },
+  components: {
+  },
+  props: {
+  },
+  computed: {
+    ...mapState('apache', {
+      apacheTaskRunning: state => state.taskRunning
+    }),
+    ...mapState('nginx', {
+      nginxTaskRunning: state => state.taskRunning
+    }),
+    ...mapState('app', {
+      apacheRunning: state => state.stat.apache,
+      nginxRunning: state => state.stat.nginx,
+      hosts: state => state.hosts
+    }),
+    ...mapState('preference', {
+      password: state => state.config.password
+    })
+  },
+  watch: {
+    item: {
+      handler (n, o) {
+        for (let k in this.errs) {
+          this.errs[k] = false
+        }
+      },
+      immediate: true,
+      deep: true
+    },
+    'item.name': function () {
+      for (let h of this.hosts) {
+        if (h.name === this.item.name && h.id !== this.item.id) {
+          this.errs['name'] = true
+          break
         }
       }
+    }
+  },
+  methods: {
+    rewriteChange (item) {
+      if (!rewrites[item]) {
+        let file = join(this.rewritePath, `${item}.conf`)
+        FileUtil.readFileAsync(file).then(content => {
+          rewrites[item] = content
+          this.item.nginx.rewrite = content
+        })
+      } else {
+        this.item.nginx.rewrite = rewrites[item]
+      }
     },
-    methods: {
-      doClose () {
-        this.$EveBus.$emit('Host-Edit-Close')
-      },
-      chooseRoot (flag, choosefile = false) {
-        const self = this
-        let opt = ['openDirectory', 'createDirectory']
-        if (choosefile) {
-          opt.push('openFile')
-        }
-        this.$electron.remote.dialog.showOpenDialog({
-          properties: opt
-        }).then(({ canceled, filePaths }) => {
-          if (canceled || filePaths.length === 0) {
-            return
-          }
-          const [path] = filePaths
-          switch (flag) {
-            case 'root':
-              self.item.root = path
-              break
-            case 'cert':
-              self.item.ssl.cert = path
-              break
-            case 'certkey':
-              self.item.ssl.key = path
-              break
+    loadRewrite () {
+      this.rewritePath = join(global.Server.Static, 'rewrite')
+      if (Object.keys(rewrites).length === 0) {
+        FileUtil.getAllFileAsync(this.rewritePath, false).then(files => {
+          files = files.sort()
+          for (let file of files) {
+            let k = file.replace('.conf', '')
+            rewrites[k] = ''
+            this.rewrites.push(k)
           }
         })
-      },
-      checkItem () {
-        if (!Number.isInteger(this.item.port.nginx)) {
-          this.errs['port_nginx'] = true
-        }
-        if (!Number.isInteger(this.item.port.apache)) {
-          this.errs['port_apache'] = true
-        }
-
-        if (this.item.useSSL) {
-          if (!Number.isInteger(this.item.port.nginx_ssl)) {
-            this.errs['port_nginx_ssl'] = true
-          }
-          if (!Number.isInteger(this.item.port.apache_ssl)) {
-            this.errs['port_apache_ssl'] = true
-          }
-        }
-
-        this.errs['name'] = this.item.name.length === 0
-        this.errs['root'] = this.item.root.length === 0
-        if (this.item.useSSL) {
-          this.errs['cert'] = this.item.ssl.cert.length === 0
-          this.errs['certkey'] = this.item.ssl.key.length === 0
-        }
-        for (let h of this.hosts) {
-          if (h.name === this.item.name && h.id !== this.item.id) {
-            this.errs['name'] = true
-            break
-          }
-        }
-        for (let k in this.errs) {
-          if (this.errs[k]) {
-            return false
-          }
-        }
-        return true
-      },
-      doSave () {
-        if (!this.checkItem()) {
-          return
-        }
-        let flag = this.isEdit ? 'edit' : 'add'
-        let access = false
-        try {
-          accessSync('/private/etc/hosts', constants.R_OK | constants.W_OK)
-          access = true
-          console.log('可以读写')
-        } catch (err) {
-          console.error('无权访问')
-        }
-        if (!access) {
-          if (!this.password) {
-            this.$EveBus.$emit('vue:need-password')
-          } else {
-            exec(`echo '${this.password}' | sudo -S chmod 777 /private/etc`)
-              .then(result => {
-                return exec(`echo '${this.password}' | sudo -S chmod 777 /private/etc/hosts`)
-              })
-              .then(result => {
-                this.$electron.ipcRenderer.send('command', 'host', 'handleHost', this.item, flag, this.edit)
-              })
-              .catch(_ => {
-                this.$message.error('操作失败,hosts文件权限不正确')
-              })
-          }
-        } else {
-          this.$electron.ipcRenderer.send('command', 'host', 'handleHost', this.item, flag, this.edit)
-        }
+      } else {
+        this.rewrites.push(...Object.keys(rewrites))
       }
     },
-    created: function () {
-      this.item.id = new Date().getTime()
-      this.$EveBus.$on('vue:host-add-end', res => {
-        if (res === true) {
-          if (this.apacheRunning && !this.apacheTaskRunning) {
-            this.$electron.ipcRenderer.send('command', 'apache', 'reloadService', this.version)
-          }
-          if (this.nginxRunning && !this.nginxTaskRunning) {
-            this.$electron.ipcRenderer.send('command', 'nginx', 'reloadService', this.version)
-          }
-          let list = JSON.parse(JSON.stringify(this.hosts))
-          list.push(this.item)
-          this.$store.dispatch('app/updateHosts', list)
-          this.$electron.ipcRenderer.send('command', 'host', 'updateHostList', list)
-          this.$message.success('操作成功')
-          this.$EveBus.$emit('Host-Edit-Close')
+    doClose () {
+      this.$EveBus.$emit('Host-Edit-Close')
+    },
+    chooseRoot (flag, choosefile = false) {
+      const self = this
+      let opt = ['openDirectory', 'createDirectory']
+      if (choosefile) {
+        opt.push('openFile')
+      }
+      this.$electron.remote.dialog.showOpenDialog({
+        properties: opt
+      }).then(({ canceled, filePaths }) => {
+        if (canceled || filePaths.length === 0) {
+          return
         }
-      })
-      this.$EveBus.$on('vue:host-edit-end', res => {
-        if (res === true) {
-          if (this.apacheRunning && !this.apacheTaskRunning) {
-            this.$electron.ipcRenderer.send('command', 'apache', 'reloadService', this.version)
-          }
-          if (this.nginxRunning && !this.nginxTaskRunning) {
-            this.$electron.ipcRenderer.send('command', 'nginx', 'reloadService', this.version)
-          }
-          let list = JSON.parse(JSON.stringify(this.hosts))
-          let i = 0
-          for (let h of list) {
-            if (h.id === this.edit.id) {
-              break
-            }
-            i += 1
-          }
-          list[i] = this.item
-          this.$store.dispatch('app/updateHosts', list)
-          this.$electron.ipcRenderer.send('command', 'host', 'updateHostList', list)
-          this.$message.success('操作成功')
-          this.$EveBus.$emit('Host-Edit-Close')
+        const [path] = filePaths
+        switch (flag) {
+          case 'root':
+            self.item.root = path
+            break
+          case 'cert':
+            self.item.ssl.cert = path
+            break
+          case 'certkey':
+            self.item.ssl.key = path
+            break
         }
       })
     },
-    destroyed () {
-      this.$EveBus.$off('vue:host-add-end')
-      this.$EveBus.$off('vue:host-edit-end')
+    checkItem () {
+      if (!Number.isInteger(this.item.port.nginx)) {
+        this.errs['port_nginx'] = true
+      }
+      if (!Number.isInteger(this.item.port.apache)) {
+        this.errs['port_apache'] = true
+      }
+
+      if (this.item.useSSL) {
+        if (!Number.isInteger(this.item.port.nginx_ssl)) {
+          this.errs['port_nginx_ssl'] = true
+        }
+        if (!Number.isInteger(this.item.port.apache_ssl)) {
+          this.errs['port_apache_ssl'] = true
+        }
+      }
+
+      this.errs['name'] = this.item.name.length === 0
+      this.errs['root'] = this.item.root.length === 0
+      if (this.item.useSSL) {
+        this.errs['cert'] = this.item.ssl.cert.length === 0
+        this.errs['certkey'] = this.item.ssl.key.length === 0
+      }
+      for (let h of this.hosts) {
+        if (h.name === this.item.name && h.id !== this.item.id) {
+          this.errs['name'] = true
+          break
+        }
+      }
+      for (let k in this.errs) {
+        if (this.errs[k]) {
+          return false
+        }
+      }
+      return true
+    },
+    doSave () {
+      if (!this.checkItem()) {
+        return
+      }
+      let flag = this.isEdit ? 'edit' : 'add'
+      let access = false
+      try {
+        accessSync('/private/etc/hosts', constants.R_OK | constants.W_OK)
+        access = true
+        console.log('可以读写')
+      } catch (err) {
+        console.error('无权访问')
+      }
+      if (!access) {
+        if (!this.password) {
+          this.$EveBus.$emit('vue:need-password')
+        } else {
+          exec(`echo '${this.password}' | sudo -S chmod 777 /private/etc`)
+            .then(result => {
+              return exec(`echo '${this.password}' | sudo -S chmod 777 /private/etc/hosts`)
+            })
+            .then(result => {
+              this.$electron.ipcRenderer.send('command', 'host', 'handleHost', this.item, flag, this.edit)
+            })
+            .catch(_ => {
+              this.$message.error('操作失败,hosts文件权限不正确')
+            })
+        }
+      } else {
+        this.$electron.ipcRenderer.send('command', 'host', 'handleHost', this.item, flag, this.edit)
+      }
     }
+  },
+  created: function () {
+    this.loadRewrite()
+    this.item.id = new Date().getTime()
+    this.$EveBus.$on('vue:host-add-end', res => {
+      if (res === true) {
+        if (this.apacheRunning && !this.apacheTaskRunning) {
+          this.$electron.ipcRenderer.send('command', 'apache', 'reloadService', this.version)
+        }
+        if (this.nginxRunning && !this.nginxTaskRunning) {
+          this.$electron.ipcRenderer.send('command', 'nginx', 'reloadService', this.version)
+        }
+        let list = JSON.parse(JSON.stringify(this.hosts))
+        list.push(this.item)
+        this.$store.dispatch('app/updateHosts', list)
+        this.$electron.ipcRenderer.send('command', 'host', 'updateHostList', list)
+        this.$message.success('操作成功')
+        this.$EveBus.$emit('Host-Edit-Close')
+      }
+    })
+    this.$EveBus.$on('vue:host-edit-end', res => {
+      if (res === true) {
+        if (this.apacheRunning && !this.apacheTaskRunning) {
+          this.$electron.ipcRenderer.send('command', 'apache', 'reloadService', this.version)
+        }
+        if (this.nginxRunning && !this.nginxTaskRunning) {
+          this.$electron.ipcRenderer.send('command', 'nginx', 'reloadService', this.version)
+        }
+        let list = JSON.parse(JSON.stringify(this.hosts))
+        let i = 0
+        for (let h of list) {
+          if (h.id === this.edit.id) {
+            break
+          }
+          i += 1
+        }
+        list[i] = this.item
+        this.$store.dispatch('app/updateHosts', list)
+        this.$electron.ipcRenderer.send('command', 'host', 'updateHostList', list)
+        this.$message.success('操作成功')
+        this.$EveBus.$emit('Host-Edit-Close')
+      }
+    })
+  },
+  destroyed () {
+    this.$EveBus.$off('vue:host-add-end')
+    this.$EveBus.$off('vue:host-edit-end')
   }
+}
 </script>
 
 <style lang="scss">
