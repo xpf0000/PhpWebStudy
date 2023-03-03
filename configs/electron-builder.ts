@@ -5,7 +5,7 @@ const conf: Configuration = {
   productName: 'PhpWebStudy',
   buildVersion: '1.0.38',
   electronVersion: '23.1.1',
-  appId: 'phpstudy.xpfme.com',
+  appId: 'phpstudy.mas.xpfme.com',
   asar: true,
   directories: {
     output: 'release'
@@ -18,31 +18,11 @@ const conf: Configuration = {
     '!**/node_modules/*.d.ts',
     '!**/node_modules/.bin'
   ],
-  dmg: {
-    sign: false,
-    window: {
-      width: 540,
-      height: 380
-    },
-    contents: [
-      {
-        x: 410,
-        y: 230,
-        type: 'link',
-        path: '/Applications'
-      },
-      {
-        x: 130,
-        y: 230,
-        type: 'file'
-      }
-    ]
-  },
   mac: {
-    icon: 'build/Icon.icns',
+    icon: 'build/icon.icns',
     target: {
-      target: 'default',
-      arch: ['x64', 'arm64']
+      target: 'mas',
+      arch: 'universal'
     },
     extendInfo: {
       'Icon file': 'icon.icns'
@@ -50,10 +30,14 @@ const conf: Configuration = {
     type: 'distribution',
     darkModeSupport: true,
     category: 'public.app-category.developer-tools',
-    entitlements: 'build/entitlements.mac.plist',
-    entitlementsInherit: 'build/entitlements.mac.plist',
     hardenedRuntime: true,
     gatekeeperAssess: false
+  },
+  mas: {
+    entitlements: 'build/entitlements.mac.plist',
+    entitlementsInherit: 'build/entitlements.mac.plist',
+    provisioningProfile: 'build/phpwebstudy_mas_production.provisionprofile',
+    hardenedRuntime: false
   },
   afterSign: 'build/notarize.js',
   publish: [PublishConfig]
