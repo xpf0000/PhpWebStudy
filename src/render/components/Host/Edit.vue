@@ -198,7 +198,6 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
   import { readFileAsync, getAllFileAsync } from '@shared/file'
-  import { passwordCheck } from '@/util/Brew'
   import { handleHost } from '@/util/Host'
   import { AppHost, AppStore } from '@/store/app'
   import { AppSoftInstalledItem, BrewStore, SoftInstalled } from '@/store/brew'
@@ -409,27 +408,25 @@
         } catch (err) {
           console.error('无权访问')
         }
-        passwordCheck().then(() => {
-          if (!access) {
-            exec(`echo '${this.password}' | sudo -S chmod 777 /private/etc`)
-              .then(() => {
-                return exec(`echo '${this.password}' | sudo -S chmod 777 /private/etc/hosts`)
-              })
-              .then(() => {
-                handleHost(this.item, flag, this.edit as AppHost).then(() => {
-                  this.running = false
-                })
-              })
-              .catch(() => {
-                this.$message.error(this.$t('base.hostNoRole'))
+        if (!access) {
+          exec(`echo '${this.password}' | sudo -S chmod 777 /private/etc`)
+            .then(() => {
+              return exec(`echo '${this.password}' | sudo -S chmod 777 /private/etc/hosts`)
+            })
+            .then(() => {
+              handleHost(this.item, flag, this.edit as AppHost).then(() => {
                 this.running = false
               })
-          } else {
-            handleHost(this.item, flag, this.edit as AppHost).then(() => {
+            })
+            .catch(() => {
+              this.$message.error(this.$t('base.hostNoRole'))
               this.running = false
             })
-          }
-        })
+        } else {
+          handleHost(this.item, flag, this.edit as AppHost).then(() => {
+            this.running = false
+          })
+        }
       }
     }
   })

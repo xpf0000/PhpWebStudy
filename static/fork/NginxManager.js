@@ -2,6 +2,7 @@ const join = require('path').join
 const existsSync = require('fs').existsSync
 const BaseManager = require('./BaseManager')
 const { I18nT } = require('./lang/index.js')
+const sudo = require('sudo-prompt')
 const execPromise = require('child-process-promise').exec
 
 class NginxManager extends BaseManager {
@@ -25,15 +26,23 @@ class NginxManager extends BaseManager {
       let pid = join(global.Server.NginxDir, 'common/logs/nginx.pid')
       let errlog = join(global.Server.NginxDir, 'common/logs/error.log')
       let g = `pid ${pid};error_log ${errlog};`
-      execPromise(`echo '${global.Server.Password}' | sudo -S ${bin} -c ${c} -g '${g}'`)
-        .then((res) => {
-          this._handleLog(res.stdout)
+
+      sudo.exec(
+        `sudo ${bin} -c ${c} -g '${g}'`,
+        {
+          name: 'PHPWebStudy'
+        },
+        (err, stdout, stderr) => {
+          if (err) {
+            const errStr = stderr?.toString() ?? ''
+            this._handleLog(errStr)
+            reject(new Error(errStr))
+            return
+          }
+          this._handleLog(stdout?.toString() ?? '')
           resolve(0)
-        })
-        .catch((err) => {
-          this._handleLog(err)
-          reject(err)
-        })
+        }
+      )
     })
   }
 }

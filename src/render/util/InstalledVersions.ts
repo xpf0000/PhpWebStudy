@@ -53,8 +53,8 @@ class InstalledVersions {
           data.installed.push(...installed)
           data.installedInited = true
           old.splice(0)
-          callBack()
         }
+        callBack()
       }
     )
     return this

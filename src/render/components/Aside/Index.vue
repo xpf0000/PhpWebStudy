@@ -232,7 +232,6 @@
 <script lang="ts">
   import { defineComponent } from 'vue'
   import { startService, stopService } from '@/util/Service'
-  import { passwordCheck } from '@/util/Brew'
   import IPC from '@/util/IPC'
   import { AppStore } from '@/store/app'
   import { BrewStore } from '@/store/brew'
@@ -521,116 +520,108 @@
         if (this.groupDisabled) {
           return
         }
-        passwordCheck().then(() => {
-          const all = []
-          if (this.groupIsRunning) {
-            if (this.showItem.Nginx && this.nginxRunning && this.nginxVersion?.version) {
-              all.push(stopService('nginx', this.nginxVersion))
-            }
-            if (this.showItem.Apache && this.apacheRunning && this.apacheVersion?.version) {
-              all.push(stopService('apache', this.apacheVersion))
-            }
-            if (this.showItem.Mysql && this.mysqlRunning && this.mysqlVersion?.version) {
-              all.push(stopService('mysql', this.mysqlVersion))
-            }
-            if (
-              this.showItem.Memcached &&
-              this.memcachedRunning &&
-              this.memcachedVersion?.version
-            ) {
-              all.push(stopService('memcached', this.memcachedVersion))
-            }
-            if (this.showItem.Redis && this.redisRunning && this.redisVersion?.version) {
-              all.push(stopService('redis', this.redisVersion))
-            }
-            if (this.showItem.MongoDB && this.mongodbRunning && this.mongodbVersion?.version) {
-              all.push(stopService('mongodb', this.mongodbVersion))
-            }
-            this.phpVersions.forEach((v) => {
-              all.push(stopService('php', v))
-            })
-          } else {
-            if (this.showItem.Nginx && this.nginxVersion?.version) {
-              all.push(startService('nginx', this.nginxVersion))
-            }
-            if (this.showItem.Apache && this.apacheVersion?.version) {
-              all.push(startService('apache', this.apacheVersion))
-            }
-            if (this.showItem.Mysql && this.mysqlVersion?.version) {
-              all.push(startService('mysql', this.mysqlVersion))
-            }
-            if (this.showItem.Memcached && this.memcachedVersion?.version) {
-              all.push(startService('memcached', this.memcachedVersion))
-            }
-            if (this.showItem.Redis && this.redisVersion?.version) {
-              all.push(startService('redis', this.redisVersion))
-            }
-            if (this.showItem.MongoDB && this.mongodbVersion?.version) {
-              all.push(startService('mongodb', this.mongodbVersion))
-            }
-            this.phpVersions.forEach((v) => {
-              all.push(startService('php', v))
-            })
+        const all = []
+        if (this.groupIsRunning) {
+          if (this.showItem.Nginx && this.nginxRunning && this.nginxVersion?.version) {
+            all.push(stopService('nginx', this.nginxVersion))
           }
-          if (all.length > 0) {
-            Promise.all(all)
-              .then((res) => {
-                let find = res.find((s: boolean | string) => typeof s === 'string')
-                if (find) {
-                  this.$message.error(find as string)
-                } else {
-                  this.$message.success(this.$t('base.success'))
-                }
-              })
-              .catch(() => {
-                this.$message.error(this.$t('base.fail'))
-              })
+          if (this.showItem.Apache && this.apacheRunning && this.apacheVersion?.version) {
+            all.push(stopService('apache', this.apacheVersion))
           }
-        })
+          if (this.showItem.Mysql && this.mysqlRunning && this.mysqlVersion?.version) {
+            all.push(stopService('mysql', this.mysqlVersion))
+          }
+          if (this.showItem.Memcached && this.memcachedRunning && this.memcachedVersion?.version) {
+            all.push(stopService('memcached', this.memcachedVersion))
+          }
+          if (this.showItem.Redis && this.redisRunning && this.redisVersion?.version) {
+            all.push(stopService('redis', this.redisVersion))
+          }
+          if (this.showItem.MongoDB && this.mongodbRunning && this.mongodbVersion?.version) {
+            all.push(stopService('mongodb', this.mongodbVersion))
+          }
+          this.phpVersions.forEach((v) => {
+            all.push(stopService('php', v))
+          })
+        } else {
+          if (this.showItem.Nginx && this.nginxVersion?.version) {
+            all.push(startService('nginx', this.nginxVersion))
+          }
+          if (this.showItem.Apache && this.apacheVersion?.version) {
+            all.push(startService('apache', this.apacheVersion))
+          }
+          if (this.showItem.Mysql && this.mysqlVersion?.version) {
+            all.push(startService('mysql', this.mysqlVersion))
+          }
+          if (this.showItem.Memcached && this.memcachedVersion?.version) {
+            all.push(startService('memcached', this.memcachedVersion))
+          }
+          if (this.showItem.Redis && this.redisVersion?.version) {
+            all.push(startService('redis', this.redisVersion))
+          }
+          if (this.showItem.MongoDB && this.mongodbVersion?.version) {
+            all.push(startService('mongodb', this.mongodbVersion))
+          }
+          this.phpVersions.forEach((v) => {
+            all.push(startService('php', v))
+          })
+        }
+        if (all.length > 0) {
+          Promise.all(all)
+            .then((res) => {
+              let find = res.find((s: boolean | string) => typeof s === 'string')
+              if (find) {
+                this.$message.error(find as string)
+              } else {
+                this.$message.success(this.$t('base.success'))
+              }
+            })
+            .catch(() => {
+              this.$message.error(this.$t('base.fail'))
+            })
+        }
       },
       switchChange(flag: string) {
-        passwordCheck().then(() => {
-          let fn = null
-          let promise: Promise<any> | null = null
-          switch (flag) {
-            case 'nginx':
-              if (!this.nginxVersion?.version) return
-              fn = this.nginxRunning ? stopService : startService
-              promise = fn('nginx', this.nginxVersion)
-              break
-            case 'mysql':
-              if (!this.mysqlVersion?.version) return
-              fn = this.mysqlRunning ? stopService : startService
-              promise = fn('mysql', this.mysqlVersion)
-              break
-            case 'apache':
-              if (!this.apacheVersion?.version) return
-              fn = this.apacheRunning ? stopService : startService
-              promise = fn('apache', this.apacheVersion)
-              break
-            case 'memcached':
-              if (!this.memcachedVersion?.version) return
-              fn = this.memcachedRunning ? stopService : startService
-              promise = fn('memcached', this.memcachedVersion)
-              break
-            case 'redis':
-              if (!this.redisVersion?.version) return
-              fn = this.redisRunning ? stopService : startService
-              promise = fn('redis', this.redisVersion)
-              break
-            case 'mongodb':
-              if (!this.mongodbVersion?.version) return
-              fn = this.mongodbRunning ? stopService : startService
-              promise = fn('mongodb', this.mongodbVersion)
-              break
+        let fn = null
+        let promise: Promise<any> | null = null
+        switch (flag) {
+          case 'nginx':
+            if (!this.nginxVersion?.version) return
+            fn = this.nginxRunning ? stopService : startService
+            promise = fn('nginx', this.nginxVersion)
+            break
+          case 'mysql':
+            if (!this.mysqlVersion?.version) return
+            fn = this.mysqlRunning ? stopService : startService
+            promise = fn('mysql', this.mysqlVersion)
+            break
+          case 'apache':
+            if (!this.apacheVersion?.version) return
+            fn = this.apacheRunning ? stopService : startService
+            promise = fn('apache', this.apacheVersion)
+            break
+          case 'memcached':
+            if (!this.memcachedVersion?.version) return
+            fn = this.memcachedRunning ? stopService : startService
+            promise = fn('memcached', this.memcachedVersion)
+            break
+          case 'redis':
+            if (!this.redisVersion?.version) return
+            fn = this.redisRunning ? stopService : startService
+            promise = fn('redis', this.redisVersion)
+            break
+          case 'mongodb':
+            if (!this.mongodbVersion?.version) return
+            fn = this.mongodbRunning ? stopService : startService
+            promise = fn('mongodb', this.mongodbVersion)
+            break
+        }
+        promise?.then((res) => {
+          if (typeof res === 'string') {
+            this.$message.error(res)
+          } else {
+            this.$message.success(this.$t('base.success'))
           }
-          promise?.then((res) => {
-            if (typeof res === 'string') {
-              this.$message.error(res)
-            } else {
-              this.$message.success(this.$t('base.success'))
-            }
-          })
         })
       },
       nav(page: string) {

@@ -21,10 +21,10 @@ const {
 } = require('../shared/file.js')
 const { execAsync, isAppleSilicon } = require('../shared/utils.ts')
 const compressing = require('compressing')
-const execPromise = require('child-process-promise').exec
 const ServeHandler = require('serve-handler')
 const Http = require('http')
 const Pty = require('node-pty')
+const sudo = require('sudo-prompt')
 
 export default class Application extends EventEmitter {
   constructor() {
@@ -572,17 +572,22 @@ export default class Application extends EventEmitter {
       case 'app:password-check':
         let pass = args[0]
         console.log('pass: ', pass)
-        execPromise(`echo '${pass}' | sudo -S -k -l`)
-          .then((res) => {
-            console.log(res)
+
+        sudo.exec(
+          `echo '${pass}' | sudo -S -k -l`,
+          {
+            name: 'PHPWebStudy'
+          },
+          (error) => {
+            if (error) {
+              this.windowManager.sendCommandTo(this.mainWindow, command, key, false)
+              return
+            }
             this.configManager.setConfig('password', pass)
             global.Server.Password = pass
             this.windowManager.sendCommandTo(this.mainWindow, command, key, pass)
-          })
-          .catch((err) => {
-            console.log('err: ', err)
-            this.windowManager.sendCommandTo(this.mainWindow, command, key, false)
-          })
+          }
+        )
         return
       case 'app:brew-install':
         this.windowManager.getFocusedWindow().minimize()

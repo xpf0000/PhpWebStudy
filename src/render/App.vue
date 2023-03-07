@@ -7,7 +7,6 @@
   import { defineComponent } from 'vue'
   import TitleBar from './components/Native/TitleBar.vue'
   import { EventBus } from './global'
-  import { passwordCheck } from '@/util/Brew'
   import IPC from '@/util/IPC'
   import installedVersions from '@/util/InstalledVersions'
   import { AppStore } from '@/store/app'
@@ -51,18 +50,16 @@
           .show()
       },
       checkPassword() {
-        passwordCheck()
-          .then(() => {
-            installedVersions.allInstalledVersions([
-              'php',
-              'nginx',
-              'mysql',
-              'apache',
-              'memcached',
-              'redis',
-              'mongodb'
-            ])
-          })
+        installedVersions
+          .allInstalledVersions([
+            'php',
+            'nginx',
+            'mysql',
+            'apache',
+            'memcached',
+            'redis',
+            'mongodb'
+          ])
           .then(() => {
             AppStore().versionInited = true
           })

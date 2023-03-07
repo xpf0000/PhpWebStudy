@@ -3,7 +3,7 @@ import PublishConfig from './publish'
 
 const conf: Configuration = {
   productName: 'PHPWebStudy',
-  buildVersion: '1.0.43',
+  buildVersion: '1.0.45',
   electronVersion: '23.1.1',
   appId: 'phpstudy.mas.xpfme.com',
   asar: true,
@@ -38,6 +38,7 @@ const conf: Configuration = {
     type: 'distribution',
     entitlements: 'build/entitlements.mas.plist',
     entitlementsInherit: 'build/entitlements.mas.inherit.plist',
+    entitlementsLoginHelper: 'build/entitlements.mas.loginhelper.plist',
     provisioningProfile: 'build/phpwebstudy_mas_production.provisionprofile',
     hardenedRuntime: false
   },

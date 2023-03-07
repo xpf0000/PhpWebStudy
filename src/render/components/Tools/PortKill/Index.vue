@@ -45,7 +45,6 @@
 <script lang="ts">
   import { markRaw, defineComponent } from 'vue'
   import { Search } from '@element-plus/icons-vue'
-  import { passwordCheck } from '@/util/Brew'
   const { execSync } = require('child_process')
 
   const SearchIcon = markRaw(Search)
@@ -70,9 +69,7 @@
     computed: {},
     watch: {},
     created: function () {},
-    mounted() {
-      passwordCheck().then(() => {})
-    },
+    mounted() {},
     unmounted() {},
     methods: {
       cleanSelect() {

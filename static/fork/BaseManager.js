@@ -3,6 +3,8 @@ const existsSync = require('fs').existsSync
 const readFileSync = require('fs').readFileSync
 const unlinkSync = require('fs').unlinkSync
 const execPromise = require('child-process-promise').exec
+const sudo = require('sudo-prompt')
+
 class BaseManager {
   constructor() {
     this._thenSuccess = this._thenSuccess.bind(this)
@@ -20,23 +22,30 @@ class BaseManager {
 
     let fn = commands[0]
     commands.splice(0, 1)
-    execPromise(`echo '${global.Server.Password}' | sudo -S -k -l`)
-      .then(() => {
+
+    sudo.exec(
+      "echo 'Request Sudo'",
+      {
+        name: 'PHPWebStudy'
+      },
+      (error) => {
+        if (error) {
+          process.send({
+            command: 'application:need-password',
+            key: 'application:need-password',
+            info: false
+          })
+          this._processSend({
+            code: 1,
+            msg: I18nT('fork.needPassWord') + '<br/>'
+          })
+          return
+        }
         if (this[fn]) {
           this[fn](...commands)
         }
-      })
-      .catch(() => {
-        process.send({
-          command: 'application:need-password',
-          key: 'application:need-password',
-          info: false
-        })
-        this._processSend({
-          code: 1,
-          msg: I18nT('fork.needPassWord') + '<br/>'
-        })
-      })
+      }
+    )
   }
 
   _fixEnv() {
@@ -161,55 +170,53 @@ class BaseManager {
       let serverName = dis[this.type]
       let command = `ps aux | grep '${serverName}' | awk '{print $2,$11,$12}'`
       console.log('_stopServer command: ', command)
-      execPromise(command)
-        .then((res) => {
-          let pids = res.stdout.trim().split('\n')
-          console.log('pids: ', pids)
-          let arr = []
-          for (let p of pids) {
-            if (
-              p.indexOf(' grep ') >= 0 ||
-              p.indexOf(' /bin/sh -c') >= 0 ||
-              p.indexOf('/Contents/MacOS/') >= 0
-            ) {
-              continue
-            }
-            arr.push(p.split(' ')[0])
+      execPromise(command).then((res) => {
+        let pids = res.stdout.trim().split('\n')
+        console.log('pids: ', pids)
+        let arr = []
+        for (let p of pids) {
+          if (
+            p.indexOf(' grep ') >= 0 ||
+            p.indexOf(' /bin/sh -c') >= 0 ||
+            p.indexOf('/Contents/MacOS/') >= 0
+          ) {
+            continue
           }
-          console.log('pids 0: ', arr)
-          if (arr.length === 0) {
-            cleanPid()
-            resolve(0)
-          } else {
-            arr = arr.join(' ')
-            console.log('pids 1: ', arr)
-            let sig = ''
-            switch (this.type) {
-              case 'mysql':
-                sig = '-9'
-                break
-              case 'mongodb':
-                sig = '-2'
-                break
-              default:
-                sig = '-INT'
-                break
-            }
-            return execPromise(`echo '${global.Server.Password}' | sudo -S kill ${sig} ${arr}`)
+          arr.push(p.split(' ')[0])
+        }
+        console.log('pids 0: ', arr)
+        if (arr.length === 0) {
+          cleanPid()
+          resolve(0)
+        } else {
+          arr = arr.join(' ')
+          console.log('pids 1: ', arr)
+          let sig = ''
+          switch (this.type) {
+            case 'mysql':
+              sig = '-9'
+              break
+            case 'mongodb':
+              sig = '-2'
+              break
+            default:
+              sig = '-INT'
+              break
           }
-        })
-        .then(() => {
-          setTimeout(() => {
-            cleanPid()
-            resolve(0)
-          }, 1000)
-        })
-        .catch(() => {
-          setTimeout(() => {
-            cleanPid()
-            resolve(0)
-          }, 1000)
-        })
+          sudo.exec(
+            `sudo kill ${sig} ${arr}`,
+            {
+              name: 'PHPWebStudy'
+            },
+            () => {
+              setTimeout(() => {
+                cleanPid()
+                resolve(0)
+              }, 1000)
+            }
+          )
+        }
+      })
     })
   }
 
@@ -222,15 +229,21 @@ class BaseManager {
           this.type === 'apache' || this.type === 'mysql' || this.type === 'nginx'
             ? '-HUP'
             : '-USR2'
-        execPromise(`echo '${global.Server.Password}' | sudo -S kill ${sign} ${pid}`)
-          .then(() => {
+        sudo.exec(
+          `sudo kill ${sign} ${pid}`,
+          {
+            name: 'PHPWebStudy'
+          },
+          (err, stdout, stderr) => {
+            if (err) {
+              reject(new Error(stderr?.toString() ?? ''))
+              return
+            }
             setTimeout(() => {
               resolve(0)
             }, 1000)
-          })
-          .catch((err) => {
-            reject(err)
-          })
+          }
+        )
       } else {
         reject(new Error(I18nT('fork.serviceNoRun')))
       }
