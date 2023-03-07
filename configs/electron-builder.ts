@@ -3,7 +3,7 @@ import PublishConfig from './publish'
 
 const conf: Configuration = {
   productName: 'PHPWebStudy',
-  buildVersion: '1.0.45',
+  buildVersion: '1.0.47',
   electronVersion: '23.1.1',
   appId: 'phpstudy.mas.xpfme.com',
   asar: true,
@@ -16,15 +16,16 @@ const conf: Configuration = {
     '!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme,LICENSE}',
     '!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}',
     '!**/node_modules/*.d.ts',
-    '!**/node_modules/.bin'
+    '!**/node_modules/.bin',
+    '!**/node_modules/node-pty/build/node_gyp_bins'
   ],
   mac: {
     icon: 'build/icon.icns',
     target: {
       target: 'mas',
-      arch: 'x64'
+      arch: 'universal'
     },
-    asarUnpack: ['**/*.node'],
+    asarUnpack: ['**/*.node', 'node_modules/sudo-prompt/**'],
     extendInfo: {
       'Icon file': 'icon.icns'
     },

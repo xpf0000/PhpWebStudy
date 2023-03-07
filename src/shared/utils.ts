@@ -7,7 +7,12 @@ export function execAsync(
   options: { [key: string]: any } = {}
 ) {
   return new Promise((resolve, reject) => {
-    const optdefault = { env: process.env }
+    const optdefault = options
+    if (!optdefault?.env) {
+      optdefault.env = { ...process.env }
+    } else {
+      Object.assign(optdefault.env, process.env)
+    }
     if (!optdefault.env['PATH']) {
       optdefault.env['PATH'] =
         '/opt:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin'
@@ -16,17 +21,16 @@ export function execAsync(
         'PATH'
       ] = `/opt:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:${optdefault.env['PATH']}`
     }
-    const opt = { ...optdefault, ...options }
     if (global.Server.Proxy) {
       for (const k in global.Server.Proxy) {
-        opt.env[k] = global.Server.Proxy[k]
+        optdefault.env[k] = global.Server.Proxy[k]
       }
     }
     if (global.Server.isAppleSilicon) {
       arg.unshift('-arm64', command)
       command = 'arch'
     }
-    const cp = spawn(command, arg, opt)
+    const cp = spawn(command, arg, optdefault)
     const stdout: Array<Buffer> = []
     const stderr: Array<Buffer> = []
     cp.stdout.on('data', (data: Buffer) => {

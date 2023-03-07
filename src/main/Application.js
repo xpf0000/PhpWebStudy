@@ -154,11 +154,33 @@ export default class Application extends EventEmitter {
     global.Server.Static = __static
     global.Server.Password = this.configManager.getConfig('password')
     console.log('global.Server.Password: ', global.Server.Password)
+    const env = this._fixEnv()
+    sudo.exec(
+      'cd /opt/homebrew; ls',
+      {
+        name: 'PHPWebStudy',
+        env: env
+      },
+      (err, stdout, stderr) => {
+        logger.info('sudo error: ', err)
+        logger.info('sudo stdout: ', stdout?.toString())
+        logger.info('sudo stderr: ', stderr?.toString())
+      }
+    )
+    execAsync('ls', [], {
+      cwd: '/opt/homebrew'
+    })
+      .then((r) => {
+        logger.info('ls r: ', r)
+      })
+      .catch((e) => {
+        logger.info('ls e: ', e)
+      })
     execAsync('which', ['brew'])
       .then((res) => {
-        console.log('which brew: ', res)
+        logger.info('which brew: ', res)
         execAsync('brew', ['--repo']).then((p) => {
-          console.log('brew --repo: ', p)
+          logger.info('brew --repo: ', p)
           global.Server.BrewHome = p
           execAsync('git', [
             'config',
@@ -181,7 +203,7 @@ export default class Application extends EventEmitter {
         })
       })
       .catch((e) => {
-        console.log('which e: ', e)
+        logger.info('which err: ', e)
       })
 
     let httpdcong = join(global.Server.ApacheDir, 'common/conf/')
