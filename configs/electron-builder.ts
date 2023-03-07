@@ -2,8 +2,8 @@ import type { Configuration } from 'electron-builder'
 import PublishConfig from './publish'
 
 const conf: Configuration = {
-  productName: 'PhpWebStudy',
-  buildVersion: '1.0.38',
+  productName: 'PHPWebStudy',
+  buildVersion: '1.0.43',
   electronVersion: '23.1.1',
   appId: 'phpstudy.mas.xpfme.com',
   asar: true,
@@ -22,8 +22,9 @@ const conf: Configuration = {
     icon: 'build/icon.icns',
     target: {
       target: 'mas',
-      arch: 'universal'
+      arch: 'x64'
     },
+    asarUnpack: ['**/*.node'],
     extendInfo: {
       'Icon file': 'icon.icns'
     },
@@ -34,8 +35,9 @@ const conf: Configuration = {
     gatekeeperAssess: false
   },
   mas: {
-    entitlements: 'build/entitlements.mac.plist',
-    entitlementsInherit: 'build/entitlements.mac.plist',
+    type: 'distribution',
+    entitlements: 'build/entitlements.mas.plist',
+    entitlementsInherit: 'build/entitlements.mas.inherit.plist',
     provisioningProfile: 'build/phpwebstudy_mas_production.provisionprofile',
     hardenedRuntime: false
   },
