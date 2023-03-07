@@ -40,7 +40,8 @@ const conf: Configuration = {
     hardenedRuntime: false
   },
   afterSign: 'build/notarize.js',
-  publish: [PublishConfig]
+  publish: [PublishConfig],
+  afterPack: 'build/afterPack.js'
 }
 
 export default conf
