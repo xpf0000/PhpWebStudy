@@ -18,13 +18,13 @@ exports.default = async function after(pack) {
     ] = `/opt:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:${optdefault.env['PATH']}`
   }
   execSync('rm -rf app.asar.unpacked/node_modules/node-pty/build/node_gyp_bins', optdefault)
-  const info = resolve(dir, '../Info.plist')
-  let content = readFileSync(info, 'utf-8')
-  content = content.replace(
-    '</dict></plist>',
-    '<key>ITSAppUsesNonExemptEncryption</key><false/></dict></plist>'
-  )
-  writeFileSync(info, content)
+  // const info = resolve(dir, '../Info.plist')
+  // let content = readFileSync(info, 'utf-8')
+  // content = content.replace(
+  //   '</dict></plist>',
+  //   '<key>ITSAppUsesNonExemptEncryption</key><false/></dict></plist>'
+  // )
+  // writeFileSync(info, content)
   console.log('afterPack handle end !!!!!!')
   return true
 }

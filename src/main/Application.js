@@ -5,10 +5,9 @@ import logger from './core/Logger.ts'
 import ConfigManager from './core/ConfigManager.ts'
 import WindowManager from './ui/WindowManager.ts'
 import MenuManager from './ui/MenuManager.ts'
-import UpdateManager from './core/UpdateManager.ts'
 import { join } from 'path'
 import { copyFile, existsSync, readFileSync, unlinkSync, writeFileSync } from 'fs'
-import { fork, execSync } from 'child_process'
+import { fork, execSync, exec } from 'child_process'
 import TrayManager from './ui/TrayManager.ts'
 import { getLanguage } from './utils/index.ts'
 import { AppI18n } from './lang/index.ts'
@@ -41,7 +40,6 @@ export default class Application extends EventEmitter {
     this.menuManager.setup()
     this.initWindowManager()
     this.initTrayManager()
-    this.initUpdaterManager()
     this.initServerDir()
     this.handleCommands()
     this.handleIpcMessages()
@@ -75,14 +73,14 @@ export default class Application extends EventEmitter {
   }
 
   _fixEnv() {
-    const env = process.env
+    const env = { ...process.env }
     if (!env['PATH']) {
       env['PATH'] =
         '/opt:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/bin:/usr/local/bin:/bin:/usr/sbin:/sbin'
     } else {
       env[
         'PATH'
-      ] = `/opt:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/bin:/usr/local/bin:${env['PATH']}`
+      ] = `/opt:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/bin:/usr/local/bin:/bin:/usr/sbin:/sbin:${env['PATH']}`
     }
     return env
   }
@@ -153,57 +151,66 @@ export default class Application extends EventEmitter {
     chmod(global.Server.Cache, '0777')
     global.Server.Static = __static
     global.Server.Password = this.configManager.getConfig('password')
-    console.log('global.Server.Password: ', global.Server.Password)
     const env = this._fixEnv()
-    sudo.exec(
-      'cd /opt/homebrew; ls',
+    exec(
+      'osascript -e \'do shell script "ls" with administrator privileges\'',
       {
-        name: 'PHPWebStudy',
-        env: env
+        env,
+        cwd: global.__app_dir
       },
       (err, stdout, stderr) => {
-        logger.info('sudo error: ', err)
-        logger.info('sudo stdout: ', stdout?.toString())
-        logger.info('sudo stderr: ', stderr?.toString())
+        logger.info('osascript 0 cwd: ', global.__app_dir)
+        logger.info('osascript 0 env: ', env)
+        logger.info('osascript 0 err: ', err)
+        logger.info('osascript 0 stdout: ', stdout.toString())
+        logger.info('osascript 0 stderr: ', stderr.toString())
       }
     )
-    execAsync('ls', [], {
-      cwd: '/opt/homebrew'
-    })
-      .then((r) => {
-        logger.info('ls r: ', r)
-      })
-      .catch((e) => {
-        logger.info('ls e: ', e)
-      })
+    exec(
+      'osascript -e \'do shell script "brew --repo" with administrator privileges\'',
+      {
+        env,
+        cwd: global.__app_dir
+      },
+      (err, stdout, stderr) => {
+        logger.info('osascript 1 cwd: ', global.__app_dir)
+        logger.info('osascript 1 env: ', env)
+        logger.info('osascript 1 err: ', err)
+        logger.info('osascript 1 stdout: ', stdout.toString())
+        logger.info('osascript 1 stderr: ', stderr.toString())
+
+        execAsync('which', ['brew'])
+          .then((res) => {
+            logger.info('which 1 brew: ', res)
+          })
+          .catch((e) => {
+            logger.info('which 1 err: ', e)
+          })
+
+        global.Server.BrewHome = env?.HOMEBREW_REPOSITORY ?? ''
+        execAsync('git', [
+          'config',
+          '--global',
+          '--add',
+          'safe.directory',
+          join(p, 'Library/Taps/homebrew/homebrew-core')
+        ]).then()
+        execAsync('git', [
+          'config',
+          '--global',
+          '--add',
+          'safe.directory',
+          join(p, 'Library/Taps/homebrew/homebrew-cask')
+        ]).then()
+        global.Server.BrewCellar = env?.HOMEBREW_CELLAR ?? ''
+      }
+    )
     execAsync('which', ['brew'])
       .then((res) => {
-        logger.info('which brew: ', res)
-        execAsync('brew', ['--repo']).then((p) => {
-          logger.info('brew --repo: ', p)
-          global.Server.BrewHome = p
-          execAsync('git', [
-            'config',
-            '--global',
-            '--add',
-            'safe.directory',
-            join(p, 'Library/Taps/homebrew/homebrew-core')
-          ]).then()
-          execAsync('git', [
-            'config',
-            '--global',
-            '--add',
-            'safe.directory',
-            join(p, 'Library/Taps/homebrew/homebrew-cask')
-          ]).then()
-        })
-        execAsync('brew', ['--cellar']).then((c) => {
-          console.log('brew --cellar: ', c)
-          global.Server.BrewCellar = c
-        })
+        logger.info('which 0 brew: ', res)
       })
       .catch((e) => {
-        logger.info('which err: ', e)
+        logger.info('which 0 err: ', e)
       })
 
     let httpdcong = join(global.Server.ApacheDir, 'common/conf/')
@@ -472,18 +479,6 @@ export default class Application extends EventEmitter {
     })
   }
 
-  initUpdaterManager() {
-    if (is.mas()) {
-      return
-    }
-    try {
-      this.updateManager = new UpdateManager({})
-      this.handleUpdaterEvents()
-    } catch (err) {
-      console.log('initUpdaterManager err: ', err)
-    }
-  }
-
   relaunch() {
     this.stop()
     app.relaunch()
@@ -532,10 +527,6 @@ export default class Application extends EventEmitter {
 
     this.on('application:window-open-new', (page) => {
       console.log('application:window-open-new: ', page)
-    })
-
-    this.on('application:check-for-updates', () => {
-      this.updateManager.check()
     })
   }
 
@@ -727,35 +718,6 @@ export default class Application extends EventEmitter {
     ipcMain.on('event', (event, eventName, ...args) => {
       console.log('receive event', eventName, ...args)
       this.emit(eventName, ...args)
-    })
-  }
-
-  handleUpdaterEvents() {
-    this.updateManager.on('checking', () => {
-      this.menuManager.updateMenuItemEnabledState('app.check-for-updates', false)
-    })
-
-    this.updateManager.on('download-progress', (event) => {
-      const win = this.windowManager.getWindow('index')
-      win.setProgressBar(event.percent / 100)
-    })
-
-    this.updateManager.on('update-not-available', () => {
-      this.menuManager.updateMenuItemEnabledState('app.check-for-updates', true)
-    })
-
-    this.updateManager.on('update-downloaded', () => {
-      this.menuManager.updateMenuItemEnabledState('app.check-for-updates', true)
-      const win = this.windowManager.getWindow('index')
-      win.setProgressBar(0)
-    })
-
-    this.updateManager.on('will-updated', () => {
-      this.windowManager.setWillQuit(true)
-    })
-
-    this.updateManager.on('update-error', () => {
-      this.menuManager.updateMenuItemEnabledState('app.check-for-updates', true)
     })
   }
 }

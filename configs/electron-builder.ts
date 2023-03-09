@@ -3,7 +3,7 @@ import PublishConfig from './publish'
 
 const conf: Configuration = {
   productName: 'PHPWebStudy',
-  buildVersion: '1.0.47',
+  buildVersion: '1.0.50',
   electronVersion: '23.1.1',
   appId: 'phpstudy.mas.xpfme.com',
   asar: true,
@@ -23,11 +23,14 @@ const conf: Configuration = {
     icon: 'build/icon.icns',
     target: {
       target: 'mas',
-      arch: 'universal'
+      arch: 'x64'
     },
     asarUnpack: ['**/*.node', 'node_modules/sudo-prompt/**'],
     extendInfo: {
-      'Icon file': 'icon.icns'
+      'Icon file': 'icon.icns',
+      ITSAppUsesNonExemptEncryption: false,
+      NSAppleEventsUsageDescription:
+        'Shell Notebook can control other applications with AppleScript.'
     },
     type: 'distribution',
     darkModeSupport: true,

@@ -19,7 +19,7 @@ export function execAsync(
     } else {
       optdefault.env[
         'PATH'
-      ] = `/opt:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:${optdefault.env['PATH']}`
+      ] = `/opt:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:${optdefault.env['PATH']}`
     }
     if (global.Server.Proxy) {
       for (const k in global.Server.Proxy) {
