@@ -3,7 +3,7 @@ import PublishConfig from './publish'
 
 const conf: Configuration = {
   productName: 'PHPWebStudy',
-  buildVersion: '1.0.50',
+  buildVersion: '1.0.53',
   electronVersion: '23.1.1',
   appId: 'phpstudy.mas.xpfme.com',
   asar: true,
@@ -30,7 +30,8 @@ const conf: Configuration = {
       'Icon file': 'icon.icns',
       ITSAppUsesNonExemptEncryption: false,
       NSAppleEventsUsageDescription:
-        'Shell Notebook can control other applications with AppleScript.'
+        'Shell Notebook can control other applications with AppleScript.',
+      NSAppleScriptEnabled: 'YES'
     },
     type: 'distribution',
     darkModeSupport: true,

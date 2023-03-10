@@ -28,3 +28,7 @@ exports.default = async function after(pack) {
   console.log('afterPack handle end !!!!!!')
   return true
 }
+
+/**
+ * electron-sudo  osa
+ */

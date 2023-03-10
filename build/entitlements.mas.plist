@@ -20,5 +20,21 @@
       <true/>
       <key>com.apple.security.automation.apple-events</key>
       <true/>
+       <key>com.apple.security.scripting-targets</key>
+       <dict>
+       <key>phpstudy.mas.xpfme.com</key>
+        <array>
+           <string>/bin/bash</string>
+           <string>/bin/zsh</string>
+        </array>
+        <key>com.apple.security.scripting-targets.applescript</key>
+        <array>
+          <string>phpstudy.mas.xpfme.com</string>
+        </array>
+        <key>com.apple.security.scripting-targets.osascript</key>
+        <array>
+          <string>phpstudy.mas.xpfme.com</string>
+        </array>
+       </dict>
     </dict>
 </plist>
